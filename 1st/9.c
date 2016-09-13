@@ -21,10 +21,8 @@ int main() {
 	
 	for(i = 2; i <= n; i++) {
 		if(num[i] == 1) 
-			count++;
+			printf("%d\n", i);
 	}
-	
-	printf("%d prime numbers\n", count);
 	
 	return 0;
 }
