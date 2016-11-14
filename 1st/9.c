@@ -2,6 +2,7 @@
 #include <math.h>
 
 #define MAX 100000
+
 int main() {
 	int n, i, j, count = 0;
 	int num[MAX];
