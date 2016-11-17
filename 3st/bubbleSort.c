@@ -2,9 +2,8 @@
 #include <string.h> 
 #include <stdlib.h> 
 #include "compare.c"
-
-const int MAX_STRING_LENGTH = 30;
-const int MAX_STRINGS_AMOUNT = 10;
+#define MAX_STRING_LENGTH 256
+#define MAX_STRINGS_AMOUNT 100
 
 int main() {
 	int n, i, swapped, j, k;
@@ -14,7 +13,6 @@ int main() {
 	// printf("Enter amount of strings:\n");
 	fscanf(fin, "%i\n", &n);
 	// printf("Enter strings one by one:\n");
-	// char strings[MAX_STRINGS_AMOUNT][MAX_STRING_LENGTH];
 	char **strings;
 	strings = malloc(MAX_STRINGS_AMOUNT * sizeof(char*));
 
@@ -34,7 +32,7 @@ int main() {
 		swapped = 0;
 		for (j = 0; j < n - i - 1; j++) {
 		
-			if(compareStrings(strings[j], strings[j + 1]) == -1) {
+			if(compareStrings(strings[j], strings[j + 1]) == 1) {
 				char *temp = strings[j];
 				strings[j] = strings[j+1];
 				strings[j+1] = temp;
