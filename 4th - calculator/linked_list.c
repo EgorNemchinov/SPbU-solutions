@@ -1,8 +1,9 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 typedef struct _Node Node;
 struct _Node {
-	char *value;
+	char value; //FIXME: w\o pointer?
 	Node *next;
    	Node *prev;
 };
@@ -33,7 +34,7 @@ void deleteLinkedList(LinkedList **list) {//why **
 	(*list) = NULL;
 }
 
-void pushFront(LinkedList *list, char *data) {
+void pushFront(LinkedList *list, char data) {
 	Node *tmp = (Node*) malloc(sizeof(Node));
 	if(tmp == NULL) {
 		//means no memory allocated?
@@ -55,9 +56,9 @@ void pushFront(LinkedList *list, char *data) {
 	list->size++;
 }
 
-char* popFront(LinkedList *list) {
+char popFront(LinkedList *list) {
 	Node *prevHead = list->head;
-	char *tmp;
+	char tmp;
 	if(list->head == NULL) {
 		exit(2);
 	}
@@ -76,7 +77,7 @@ char* popFront(LinkedList *list) {
 	return tmp;
 }
 
-void pushBack(LinkedList *list, char *data) {
+void pushBack(LinkedList *list, char data) {
 	Node *tmp = (Node*) malloc(sizeof(Node));
 	if(tmp == NULL) {
 		//means no memory allocated?
@@ -98,9 +99,9 @@ void pushBack(LinkedList *list, char *data) {
 	list->size++;
 }
 
-char* popBack(LinkedList *list) {
+char popBack(LinkedList *list) {
 	Node *prevTail= list->tail;
-	char *tmp;
+	char tmp;
 	if(list->tail == NULL) {
 		exit(4);
 	}
@@ -120,9 +121,18 @@ char* popBack(LinkedList *list) {
 }
 
 void printLinkedList(LinkedList *list) {
+	if(list == NULL) {
+		puts("List is NULL");
+		return;
+	}
+	else if(list->size == 0) {
+		puts("List is empty");
+		return;
+	} 
+	// printf("List size is: %zu\n", list->size);
 	Node *tmp = list->head;
 	while(tmp) {
-		printf("%d ", *tmp->value);
+		putchar(tmp->value);
 		tmp = tmp->next;
 	}
 	printf("\n");
@@ -149,4 +159,10 @@ Node* getByIndex(LinkedList *list, size_t index) {
 			i--;
 		}
 	}
+	return tmp;
 }
+
+/*int main() {
+
+	return 0;
+}*/
