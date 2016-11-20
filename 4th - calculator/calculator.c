@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "big_num.c"
-#define QUIT 'q'
+#define QUIT '='
 #define POS 1
 #define NEG 2
 #define INVALID_SYMBOL 1
@@ -13,12 +13,19 @@
 
 int isDigit(char ch);
 BigNum* sum(BigNum *a, BigNum *b);
+BigNum* sumPos(BigNum* a, BigNum *b);
+BigNum* sub(BigNum* a, BigNum *b);
+BigNum* subPos(BigNum* a, BigNum *b);
+char cmpBigNumAbs(BigNum *a, BigNum *b);
 
+//FIXME:145-124=-/984
+//delete zeros from BigNum's tail.
 int main() {
 	BigNum *a = NULL, *b = NULL;
 
 	//TODO: get input into another function
 	char c;
+	char lastOper = 0;
 	do {
 		LinkedList *list = NULL;
 		char oper = 0, sign = 0;
@@ -77,13 +84,19 @@ int main() {
 					break;
 			}
 		}
+		if(oper != 0 && list == NULL) 
+			lastOper = oper;
 	}
 	while(c != QUIT);
 
-	printBigNum(a);
-	printBigNum(b);
-	if(a != NULL && b != NULL) 
-		printBigNum(sum(a,b));
+	// printBigNum(a);
+	// printBigNum(b);
+	if(a != NULL && b != NULL)  {
+		if(lastOper == '+') 
+			printBigNum(sum(a,b));
+		else if(lastOper == '-')
+			printBigNum(sub(a,b));
+	}
 	return 0;
 }
 
@@ -93,6 +106,24 @@ int isDigit(char ch) {
 }
 
 BigNum* sum(BigNum* a, BigNum *b) {
+	BigNum* diff;
+	if(a->sign == NEG) {
+		if(b->sign == NEG) { //-A + -B = - (A + B)
+			diff = sumPos(a, b);
+			diff->sign = NEG;
+		} else { // -A + B = B - A
+			diff = subPos(b, a);
+		}
+	} else if (b->sign == NEG) { //A + (-B) == A - B
+		diff = subPos(a,b);
+	} else { //A + B
+		puts("else");
+		diff = sumPos(a, b);
+	}
+	return diff;
+}
+
+BigNum* sumPos(BigNum* a, BigNum *b) {
 	BigNum* sum = createBigNumEmpty();
 	Node *aDig = a->digs->head;
 	Node *bDig = b->digs->head;
@@ -138,6 +169,99 @@ BigNum* sum(BigNum* a, BigNum *b) {
 	return sum;
 }
 
+//a - b
+BigNum* sub(BigNum *a, BigNum *b) {
+	BigNum* diff;
+	if(a->sign == NEG) {
+		if(b->sign == NEG) { //-A - (-B) == B - A
+			diff = subPos(b, a);
+		} else { // -A - B = - (B + A)
+			diff = sumPos(a, b);
+			diff->sign = NEG;
+		}
+	} else if (b->sign == NEG) { //A - (-B) == A + B
+		diff = sumPos(a,b);
+	} else { //A - B
+		diff = subPos(a, b);
+	}
+	return diff;
+}
+
+BigNum* subPos(BigNum *a, BigNum *b) { //TODO: all the cases.
+	BigNum* diff = createBigNumEmpty();
+	char sign;
+	Node *aDig, *bDig;
+	if(cmpBigNumAbs(a,b) == 1) {
+		aDig = a->digs->head;
+		bDig = b->digs->head;
+		sign = POS;
+	} else {
+		aDig = b->digs->head;
+		bDig = a->digs->head;
+		sign = NEG;
+	}
+
+	char tempDif = 0;
+	size_t index = 0;
+	while(aDig != NULL || bDig != NULL) {
+		tempDif = 0;
+		if(aDig != NULL) 
+			tempDif += aDig->value;
+		if(bDig != NULL) 
+			tempDif -= bDig->value;
+
+		//if we have 1 in current rank from last operation
+		if(index == diff->digs->size - 1) { 
+			tempDif += diff->digs->tail->value;
+			if(tempDif < 0) {
+				diff->digs->tail->value = (tempDif + 10);
+				putDigit(diff, -1);
+			} else {
+				diff->digs->tail->value = tempDif;
+			}
+		} else {
+			if(tempDif < 0) {
+				putDigit(diff, tempDif + 10); 
+				putDigit(diff, -1);
+			} else {
+				putDigit(diff, tempDif);
+			}
+		}
+		
+		if(aDig != NULL)
+			aDig = aDig->next;
+		if(bDig != NULL)
+			bDig = bDig->next;
+		index++;
+	}
+
+	diff->sign = sign;
+	
+	if(diff->digs->size == 0) 
+		putDigit(diff, 0); //FIXME: is it correct? when is size 0
+	return diff;
+}
+
 char maxChar(char a, char b) {
 	return a ? a > b : b;
+}
+
+//returns 1 if a>b, 0 if a==b and -1 if a<b
+char cmpBigNumAbs(BigNum* a, BigNum *b) {//add different cases
+	char diff = 0;
+	if(a->digs->size > b->digs->size)
+		return 1;
+	if(a->digs->size < b->digs->size)
+		return -1;
+	Node *aNode = a->digs->tail;
+	Node *bNode = b->digs->tail;
+	while(aNode != NULL && bNode != NULL) {
+		if(aNode->value > bNode->value) 
+			return 1;
+		if(aNode->value < bNode->value)
+			return -1;
+		aNode = aNode->next;
+		bNode = bNode->next;
+	}
+	return 0;
 }
