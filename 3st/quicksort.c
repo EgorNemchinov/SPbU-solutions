@@ -1,56 +1,36 @@
 #include <stdio.h>
-#include <string.h>
-#include "compare.c"
+#include "tools.h"
 #include <stdlib.h>
-#define MAX_STRING_LENGTH 256
-#define MAX_STRINGS_AMOUNT 100
 
 void quickSort(char **a, int first, int last);
-void swap(char **arr, int a, int b);
-void randomSort(char **a, int first, int last);
 
-int main() {
-	int i, n;
-	FILE *fin, *fout;
-	fin = fopen("input.txt", "r");
-	fout = fopen("output.txt", "w");
-
-	fscanf(fin, "%i\n", &n);
+int main(int argc, char ** argv) {
+	int n, i;
 	char **strings;
-	strings = malloc(MAX_STRINGS_AMOUNT * sizeof(char*));
+	FILE *fin;
 
-	for (i = 0; i < n; ++i)
-	{
-		strings[i] = malloc((MAX_STRING_LENGTH + 1) * sizeof(char));
+	if(argc != 3) {
+		fprintf(stderr, "Invalid arguments. Enter amount of strings and name of the input file.\n");
+		exit(1);
 	}
 
-	for (i = 0; i < n; ++i)
-	{
-		fgets(strings[i], sizeof(strings[i]), fin);
-		strings[i][strcspn(strings[i], "\n")] = 0;
-		puts(strings[i]);
-	}
+	n = atoi(argv[1]);
+	if (!(fin = fopen(argv[2], "r"))) {
+        perror(argv[2]);
+        exit(1);
+    }
+	
+	strings = (char**) malloc(n * sizeof(char*));
+	readInput(fin, strings, n);
 
 	quickSort(strings, 0, n-1);
 
 	for (i = 0; i < n; ++i)
 	{
-		fprintf(fout, "%s\n", strings[i]);
-	}
-
-	for (i = 0; i < MAX_STRINGS_AMOUNT; ++i)
-	{
+		puts(strings[i]);
 		free(strings[i]);
 	}
-	fclose(fin);
-	fclose(fout);
-}
-
-void swap(char **arr, int a, int b)
-{
-    char *temp = arr[a];
-   	arr[a] = arr[b];
-   	arr[b] = temp;
+	free(strings);
 }
 
 void quickSort(char **a, int first, int last){
