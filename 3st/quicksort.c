@@ -34,7 +34,6 @@ int main(int argc, const char ** argv) {
 }
 
 void quickSort(char **strings, int first, int last){
-	puts("quickSort called");
 	int left = first, right = last;
 	char  *middle = strings[(first + last) / 2];
 
