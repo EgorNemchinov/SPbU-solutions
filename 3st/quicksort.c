@@ -1,11 +1,11 @@
 #include <stdio.h>
-#include "tools.h"
 #include <stdlib.h>
+#include "tools.h"
 
 void quickSort(char **a, int first, int last);
 
-int main(int argc, char ** argv) {
-	int n, i;
+int main(int argc, const char ** argv) {
+	int amount, i;
 	char **strings;
 	FILE *fin;
 
@@ -14,18 +14,18 @@ int main(int argc, char ** argv) {
 		exit(1);
 	}
 
-	n = atoi(argv[1]);
+	amount = atoi(argv[1]);
 	if (!(fin = fopen(argv[2], "r"))) {
         perror(argv[2]);
         exit(1);
     }
 	
-	strings = (char**) malloc(n * sizeof(char*));
-	readInput(fin, strings, n);
+	strings = (char**) malloc(amount * sizeof(char*));
+	readInput(fin, strings, amount);
 
-	quickSort(strings, 0, n-1);
+	quickSort(strings, 0, amount - 1);
 
-	for (i = 0; i < n; ++i)
+	for (i = 0; i < amount; ++i)
 	{
 		puts(strings[i]);
 		free(strings[i]);
@@ -33,25 +33,26 @@ int main(int argc, char ** argv) {
 	free(strings);
 }
 
-void quickSort(char **a, int first, int last){
-	int i = first, j = last;
-	char  *p = a[(first + last) / 2];
-     //p - центр. эл-т
+void quickSort(char **strings, int first, int last){
+	puts("quickSort called");
+	int left = first, right = last;
+	char  *middle = strings[(first + last) / 2];
 
 	do
 	{
-		while ( i <= last && compareStrings(a[i], p) < 0) i++;
-		while (j >= first && compareStrings(a[j], p) > 0) j--;
+		while (left <= last && compareStrings(strings[left], middle) < 0) left++;
+		while (right >= first && compareStrings(strings[right], middle) > 0) right--;
 		
-		if(i <= j) {
-			if(compareStrings(a[i], a[j]) > 0) {
-				swap(a, i, j);
+		if(left <= right) {
+			if(compareStrings(strings[left], strings[right]) > 0) {
+				swap(strings, left, right);
 			} 
-			i++;
-			j--;
+			left++;
+			right--;
 		}
-	} while (i <= j);
 
-	if(j > first) quickSort(a, first, j);
-	if(i < last) quickSort(a, i, last);
+	} while (left <= right);
+
+	if(right > first) quickSort(strings, first, right);
+	if(left < last) quickSort(strings, left, last);
 }

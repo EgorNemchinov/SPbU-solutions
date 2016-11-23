@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 #define MAX_LENGTH 100000
-#define MIN_LENGTH 100
+#define MIN_LENGTH 10
 #define CHAR_RANGE_START 48
 #define CHAR_RANGE_END 122
 
@@ -17,7 +17,7 @@ int main(int argc, char ** argv) {
 		exit(1);
 	}
 
-	int n = atoi(argv[1]);
+	int amount = atoi(argv[1]);
 	FILE *fout;
 	if (!(fout = fopen(argv[2], "w"))) {
         perror(argv[2]);
@@ -25,7 +25,7 @@ int main(int argc, char ** argv) {
     }
 
 	int i, j, len;
-	for (i = 0; i < n; ++i)
+	for (i = 0; i < amount; ++i)
 	{
 		len = randInRange(MIN_LENGTH, MAX_LENGTH);
 		for (int i = 0; i < len; ++i)

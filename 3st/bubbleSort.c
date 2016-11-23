@@ -2,10 +2,10 @@
 #include <stdlib.h> 
 #include "tools.h"
 
-void bubbleSort(char ** strings, int n);
+void bubbleSort(char ** strings, int amount);
 
-int main(int argc, char ** argv) {
-	int n, i;
+int main(int argc, const char ** argv) {
+	int amount, i;
 	char **strings;
 	FILE *fin;
 
@@ -14,18 +14,18 @@ int main(int argc, char ** argv) {
 		exit(1);
 	}
 
-	n = atoi(argv[1]);
+	amount = atoi(argv[1]);
 	if (!(fin = fopen(argv[2], "r"))) {
         perror(argv[2]);
         exit(1);
     }
 	
-	strings = (char**) malloc(n * sizeof(char*));
-	readInput(fin, strings, n);
+	strings = (char**) malloc(amount * sizeof(char*));
+	readInput(fin, strings, amount);
 
-	bubbleSort(strings, n);
+	bubbleSort(strings, amount);
 
-	for (i = 0; i < n; ++i)
+	for (i = 0; i < amount; ++i)
 	{
 		puts(strings[i]);
 		free(strings[i]);
@@ -33,12 +33,13 @@ int main(int argc, char ** argv) {
 	free(strings);
 }
 
-void bubbleSort(char ** strings, int n) {
-	int i, swapped, j;
-	for (i = 0; i < n - 1; i++)
+void bubbleSort(char ** strings, int amount) {
+	int i, j, swapped;
+	
+	for (i = 0; i < amount - 1; i++)
 	{
 		swapped = 0;
-		for (j = 0; j < n - i - 1; j++) {
+		for (j = 0; j < amount - i - 1; j++) {
 		
 			if(compareStrings(strings[j], strings[j + 1]) == 1) {
 				swap(strings, j, j+1);

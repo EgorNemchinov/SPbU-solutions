@@ -1,12 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void readInput(FILE * fin, char ** arr, int n) {
+void readInput(FILE * fin, char ** strings, int n) {
 	char c;
 	size_t len;
 	size_t index = -1, i = 0;
 
-	//counting symbols in line and allocating memory
+	//count symbols in line and allocate memory
 	while(n > 0) {
 		n--;
 		index++;
@@ -16,8 +16,8 @@ void readInput(FILE * fin, char ** arr, int n) {
 			len++;
 		}
 		len++;
-		// printf("%zu \n", len);
-		arr[index] = (char *) malloc(len * sizeof(char));
+
+		strings[index] = (char *) malloc(len * sizeof(char));
 
 		if(c == EOF && n > 0) {
 			fprintf(stderr, "File ended sooner than was expected.\n");
@@ -37,40 +37,40 @@ void readInput(FILE * fin, char ** arr, int n) {
 		i = 0;
 
 		while((c = fgetc(fin)) != '\n' && c >= 0) {
-			(*(arr + index))[i] = c;
+			(*(strings + index))[i] = c;
 			i++;
 		}
-		(*(arr + index))[i] = '\0';
+		(*(strings + index))[i] = '\0';
 	}
 
 	fclose(fin);
 }
 
 
-void swap(char **arr, int a, int b)
+void swap(char **strings, int firstPos, int secondPos)
 {
-    char *temp = arr[a];
-   	arr[a] = arr[b];
-   	arr[b] = temp;
+    char *temp = strings[firstPos];
+   	strings[firstPos] = strings[secondPos];
+   	strings[secondPos] = temp;
 }
 
-int compareStrings(char *arr, char *to) { 
+int compareStrings(char *strings, char *to) { 
 	int i;
-	if(arr == to) 
+	if(strings == to) 
 		return 0;
-	 while((i = *to - *arr) == 0) {
-	 	if(*arr == 0) 
+	 while((i = *to - *strings) == 0) {
+	 	if(*strings == 0) 
 	 		if(*to == 0)
 	 			return 0;
 	 		else return -1;
 	 	else if(*to == 0)
 	 		return 1;
-	 	arr++;
+	 	strings++;
 	 	to++;
 	 }
-	 if(i<0) 
+	 if(i < 0) 
 	 	return 1;
-	 else if(i>0)
+	 else if(i > 0)
 	 	return -1;
 	 else return 0;
 }
