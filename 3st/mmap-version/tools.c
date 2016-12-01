@@ -55,12 +55,33 @@ void swap(char **strings, int firstPos, int secondPos)
    	strings[secondPos] = temp;
 }
 
-int compareStrings(char *strings, char *to) { 
+int compareStrings(const char *strings, const char *to) { 
 	int i;
 	if(strings == to) 
 		return 0;
 	 while((i = *to - *strings) == 0) {
-	 	if(*strings == '\n'	) 
+	 	if(*strings == 0) 
+	 		if(*to == 0)
+	 			return 0;
+	 		else return -1;
+	 	else if(*to == 0)
+	 		return 1;
+	 	strings++;
+	 	to++;
+	 }
+	 if(i < 0) 
+	 	return 1;
+	 else if(i > 0)
+	 	return -1;
+	 else return 0;
+}
+
+int compareMappedStrings(const char *strings, const char *to) { 
+	int i;
+	if(strings == to) 
+		return 0;
+	 while((i = *to - *strings) == 0) {
+	 	if(*strings == '\n') 
 	 		if(*to == '\n')
 	 			return 0;
 	 		else return -1;
