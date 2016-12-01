@@ -13,7 +13,7 @@ int main(int argc, const char ** argv) {
 	FILE *fin;
 
 	if(argc <= 3) {
-		if(compareStrings(argv[argc - 1], "-h") || compareStrings(argv[argc - 1], "--help")) {
+		if(compareStrings(argv[argc - 1], "-h") == 0|| compareStrings(argv[argc - 1], "--help") == 0) {
 			printf("%s", HELP_STRING);
 			success = 0;
 		} else {
@@ -29,15 +29,15 @@ int main(int argc, const char ** argv) {
     }
 	
 	if(argc == 4) {
-		if(compareStrings(argv[argc - 3], "-q") || compareStrings(argv[argc - 3], "--quick")) {
+		if(compareStrings(argv[argc - 3], "-q") == 0 || compareStrings(argv[argc - 3], "--quick") == 0) {
 			strings = (char**) malloc(amount * sizeof(char*));
 			readInput(fin, strings, amount);
 			quickSort(strings, 0, amount - 1);	
-		} else if(compareStrings(argv[argc - 3], "-b") || compareStrings(argv[argc - 3], "--bubble")) {
+		} else if(compareStrings(argv[argc - 3], "-b") == 0 || compareStrings(argv[argc - 3], "--bubble") == 0) {
 			strings = (char**) malloc(amount * sizeof(char*));
 			readInput(fin, strings, amount);
 			bubbleSort(strings, amount);		
-		} else if(compareStrings(argv[argc - 3], "-h") || compareStrings(argv[argc - 3], "--help")) {
+		} else if(compareStrings(argv[argc - 3], "-h") == 0 || compareStrings(argv[argc - 3], "--help") == 0) {
 			printf("%s", HELP_STRING);
 			success = 0;
 		} 
