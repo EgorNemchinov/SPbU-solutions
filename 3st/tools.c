@@ -1,5 +1,6 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include "tools.h"
 
 void readInput(FILE * fin, char ** strings, int n) {
 	char c;
@@ -54,7 +55,7 @@ void swap(char **strings, int firstPos, int secondPos)
    	strings[secondPos] = temp;
 }
 
-int compareStrings(char *strings, char *to) { 
+int compareStrings(const char *strings, const char *to) { 
 	int i;
 	if(strings == to) 
 		return 0;
