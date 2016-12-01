@@ -9,19 +9,18 @@ GPROF:
 	BUBBLE SORT:
 		Each sample counts as 0.01 seconds.
 		  %   cumulative   self              self     total           
-		 time   seconds   seconds    calls  ms/call  ms/call  name    
-		100.47      0.35     0.35        1   351.64   351.64  readInput
-		  0.00      0.35     0.00   499500     0.00     0.00  compareStrings
-		  0.00      0.35     0.00   251300     0.00     0.00  swap
-		  0.00      0.35     0.00        1     0.00     0.00  bubbleSort
+		 time   seconds   seconds    calls  ns/call  ns/call  name    
+		 59.52      1.78     1.78 49995000    35.60    35.60  compareStrings
+		 40.02      2.98     1.20                             readInput
+		  0.67      3.00     0.02                             bubbleSort
+		  0.34      3.01     0.01 24770626     0.41     0.41  swap
 
 	 QUICK SORT:
 		  %   cumulative   self              self     total           
-		 time   seconds   seconds    calls  ms/call  ms/call  name    
-		100.43      0.28     0.28        1   281.19   281.19  readInput
-		  0.00      0.28     0.00    15398     0.00     0.00  compareStrings
-		  0.00      0.28     0.00     2336     0.00     0.00  swap
-		  0.00      0.28     0.00        1     0.00     0.00  quickSort
+		 time   seconds   seconds    calls  ns/call  ns/call  name    
+		 99.63      1.09     1.09                             readInput
+		  0.92      1.10     0.01    30212   332.82   332.82  swap
+		  0.00      1.10     0.00   225593     0.00     0.00  compareStrings
 
 VALLGRIND:
 
