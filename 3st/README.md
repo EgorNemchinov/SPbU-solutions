@@ -2,7 +2,7 @@ For generating file "input" with N lines:
 ./generate N input
 
 For executing sort:
-./%sort_name% N input
+./%sort_name% ARG_1 N input
 
 GPROF:
 
@@ -26,15 +26,15 @@ VALLGRIND:
 
 	BUBBLE SORT:
 		HEAP SUMMARY:
-	    	in use at exit: 0 bytes in 0 blocks
-	    	total heap usage: 1,005 allocs, 1,005 frees, 50,932,904 bytes allocated
+        in use at exit: 0 bytes in 0 blocks
+        total heap usage: 10,004 allocs, 10,004 frees, 502,951,468 bytes allocated
+     
+     	All heap blocks were freed -- no leaks are possible
 
-	    	All heap blocks were freed -- no leaks are possible
-
-	QUICKSORT:
+	QUICK SORT:
 		HEAP SUMMARY:
-		   in use at exit: 0 bytes in 0 blocks
-		   total heap usage: 1,005 allocs, 1,005 frees, 50,933,200 bytes allocated
-		 
-		 All heap blocks were freed -- no leaks are possible
+     	in use at exit: 0 bytes in 0 blocks
+   		total heap usage: 10,004 allocs, 10,004 frees, 502,951,468 bytes allocated
+
+ 		All heap blocks were freed -- no leaks are possible
 
