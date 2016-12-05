@@ -5,7 +5,6 @@
 #include <sys/stat.h>
 
 void readInput(int fin, char ** strings, int amount, size_t *size) {
-	char c;
 	size_t index = 0, i = 0;
 	struct stat statbuf;
 	char *src;
