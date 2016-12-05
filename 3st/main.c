@@ -3,7 +3,7 @@
 #include <unistd.h> 
 #include "tools.h"
 #include "algorithms.h"
-#define HELP_STRING "\nTo call a sort: ./<RUNNABLE> <ARG_1> <AMOUNT_OF_STRINGS> <INPUT_FILE> \n\
+#define HELP_STRING "Simple sorts.\nTo call a sort: ./<RUNNABLE> <ARG_1> <AMOUNT_OF_STRINGS> <INPUT_FILE> \n\
 To call Quick sort, first argument is  \"-q\"(by default). \n\
 To call Bubble sort, first argument - \"-b\".\n"
 
@@ -34,7 +34,6 @@ int main(int argc, char ** argv) {
 	argc -= optind;
 	argv += optind;
 
-	printf("%d", argc);
 	if(argc < 2) {
 		fprintf(stderr, "Неверные параметры. Введите количество строк и имя входного файла.\n");
 		exit(1);
