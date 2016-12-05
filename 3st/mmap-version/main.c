@@ -5,48 +5,57 @@
 #include <fcntl.h> 
 #include "tools.h"
 #include "algorithms.h"
-#define HELP_STRING "\nTo call a sort: ./<RUNNABLE> <ARG_1> <AMOUNT_OF_STRINGS> <INPUT_FILE> \n\
-To call Quick sort, first argument is  \"-q\" or \"--quick\"(by default). \n\
-To call Bubble sort, first argument - \"-b\" or \"--bubble\".\n"
+#define HELP_STRING "Mmap sorts.\nTo call a sort: ./<RUNNABLE> <ARG_1> <AMOUNT_OF_STRINGS> <INPUT_FILE> \n\
+To call Quick sort, first argument is  \"-q\"(by default). \n\
+To call Bubble sort, first argument - \"-b\".\n"
 
-//TODO: change HELP string & take all cases of possible arguments into account
-int main(int argc, const char ** argv) {
+int main(int argc, char ** argv) {
 	int amount, i, fin, success = 1;
-	char **strings;
+	char **strings, ch;
 	size_t fileSize;
+	char sort = 'q'; //b or q(default)
 
-	if(argc <= 3) {
-		if(compareStrings(argv[argc - 1], "-h") == 0 || compareStrings(argv[argc - 1], "--help") == 0) {
-			printf("%s", HELP_STRING);
-			success = 0;
-		} else {
-			fprintf(stderr, "Invalid arguments. Enter amount of strings and name of the input file.\n");
+	while((ch = getopt(argc, argv, "hqb")) != EOF) {
+		switch(ch) {
+			case 'h':
+				printf("%s", HELP_STRING);
+				success = 0;
+				return 0;
+			case 'b':
+				sort = 'b';
+				break;
+			case 'q':
+				sort = 'q';
+				break;
+			default:
+				fprintf(stderr, "Неизвестный параметр: '%s'\n", optarg);
+				return 1;
 		}
+	}
+
+	argc -= optind;
+	argv += optind;
+
+	if(argc < 2) {
+		fprintf(stderr, "Неверные параметры. Введите количество строк и имя входного файла.\n");
 		exit(1);
 	} 
 
-	amount = atoi(argv[argc - 2]);
+	amount = atoi(argv[0]);
 	fin = open(argv[argc - 1], O_RDONLY);
 	
-	if(argc == 4) {
-		if(compareStrings(argv[argc - 3], "-q") == 0 || compareStrings(argv[argc - 3], "--quick") == 0) {
-			strings = (char**) malloc(amount * sizeof(char*));
-			readInput(fin, strings, amount, &fileSize);
-			quickSort(strings, 0, amount - 1);	
-		} else if(compareStrings(argv[argc - 3], "-b") == 0 || compareStrings(argv[argc - 3], "--bubble") == 0) {
-			strings = (char**) malloc(amount * sizeof(char*));
-			readInput(fin, strings, amount, &fileSize);
-			bubbleSort(strings, amount);		
-		} else if(compareStrings(argv[argc - 3], "-h" ) == 0 || compareStrings(argv[argc - 3], "--help") == 0) {
-			printf("%s", HELP_STRING);
-			success = 0;
-		} 
-	} else {
-		strings = (char**) malloc(amount * sizeof(char*));
-		readInput(fin, strings, amount, &fileSize);
-		quickSort(strings, 0, amount - 1);
-	}
+    strings = (char**) malloc(amount * sizeof(char*));
+	readInput(fin, strings, amount, &fileSize);
 
+	switch(sort) {
+		case 'b':
+			bubbleSort(strings, amount);
+			break;
+		case 'q':
+		default:
+			quickSort(strings, 0, amount - 1);
+			break;
+	}
 	//if sort was executed, clean up
 	if(success) {
 		for (i = 0; i < amount; ++i)
