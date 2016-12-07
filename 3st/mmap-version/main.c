@@ -9,7 +9,7 @@
 Соль в солонке. \n\
 To call Quick sort, first argument is  \"-q\"(by default). \n\
 To call Bubble sort, first argument - \"-b\".\n\
-To call Insertion sort, first argument - \"-i\".\n
+To call Insertion sort, first argument - \"-i\".\n \
 To call Merge sort, first argument - \"-m\".\n"
 
 int main(int argc, char ** argv) {
