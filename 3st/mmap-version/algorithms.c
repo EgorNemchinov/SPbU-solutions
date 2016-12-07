@@ -42,3 +42,20 @@ void bubbleSort(char ** strings, int amount) {
 			continue;
 	}
 }
+
+void insertionSort(char **strings, int amount) {
+	char  *temp;
+	int i, j;
+
+	for (i = 1; i < amount; ++i)
+	{
+		temp = strings[i];
+		j = i - 1;
+
+		while(j > 0 && (compareMappedStrings(strings[j], strings[j-1]) < 0)) {
+			strings[j+1] = strings[j];
+			--j;
+		}
+		strings[j+1] = temp;
+	}
+}

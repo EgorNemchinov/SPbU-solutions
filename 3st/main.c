@@ -13,17 +13,20 @@ int main(int argc, char ** argv) {
 	FILE *fin;
 	char sort = 'q'; //b or q(default)
 
-	while((ch = getopt(argc, argv, "hqb")) != EOF) {
+	while((ch = getopt(argc, argv, "hqbi")) != EOF) {
 		switch(ch) {
 			case 'h':
 				printf("%s", HELP_STRING);
 				success = 0;
 				return 0;
+			case 'q':
+				sort = 'q';
+				break;
 			case 'b':
 				sort = 'b';
 				break;
-			case 'q':
-				sort = 'q';
+			case 'i':
+				sort = 'i';
 				break;
 			default:
 				fprintf(stderr, "Неизвестный параметр: '%s'\n", optarg);
@@ -51,6 +54,9 @@ int main(int argc, char ** argv) {
 	switch(sort) {
 		case 'b':
 			bubbleSort(strings, amount);
+			break;
+		case 'i':
+			insertionSort(strings, amount);
 			break;
 		case 'q':
 		default:
