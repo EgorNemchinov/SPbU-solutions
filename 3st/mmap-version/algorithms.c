@@ -52,7 +52,7 @@ void insertionSort(char **strings, int amount) {
 		temp = strings[i];
 		j = i - 1;
 
-		while(j > 0 && (compareMappedStrings(strings[j], strings[j-1]) < 0)) {
+		while(j >= 0 && (compareMappedStrings(temp, strings[j]) < 0)) {
 			strings[j+1] = strings[j];
 			--j;
 		}
