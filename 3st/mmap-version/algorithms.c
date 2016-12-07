@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <malloc.h>
 #include "tools.h"
 #include "algorithms.h"
 
@@ -57,5 +58,59 @@ void insertionSort(char **strings, int amount) {
 			--j;
 		}
 		strings[j+1] = temp;
+	}
+}
+
+void mergeSort(char **strings, int first, int last){
+	int middle = (first + last) / 2;
+
+	if(first < last) {
+		mergeSort(strings, first, middle);
+		mergeSort(strings, middle + 1, last);
+		merge(strings, first, middle, last);
+	}
+}
+
+void merge(char **strings, int left, int middle, int right) {
+	int i, j, k;
+	int n1 = middle - left + 1;
+	int n2 = right - middle;
+
+	char **L, **R;
+	L = (char**) malloc(n1 * sizeof(char*));
+	R = (char**) malloc(n2 * sizeof(char*));
+
+	for (i = 0; i < n1; ++i)
+	{
+		L[i] = strings[left + i];
+	}
+
+	for (j = 0; j < n2; ++j)
+	{
+		R[j] = strings[middle + 1 + j];	
+	}
+
+	i = 0, j = 0, k = left;
+	while(i < n1 && j < n2) {
+		if(compareMappedStrings(L[i], R[j]) <= 0) {
+			strings[k] = L[i];
+			i++;
+		} else {
+			strings[k] = R[j];
+			j++;
+		}
+		k++;
+	}
+
+	while(i < n1) {
+		strings[k] = L[i];
+		i++;
+		k++;
+	}
+
+	while(j < n2) {
+		strings[k] = R[j];
+		j++;
+		k++;
 	}
 }
