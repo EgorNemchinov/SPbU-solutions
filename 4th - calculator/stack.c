@@ -1,21 +1,9 @@
-#include <malloc.h>
+#include <stdlib.h>
 #include <stdio.h>
-#include "big_num.c"
+#include "big_num.h"
+#include "stack.h"
 
-typedef struct _Stack_Node NumNode;
-
-typedef struct Stack {
-	size_t size;
-	NumNode * last;
-} Stack;
-
-struct _Stack_Node {
-	BigNum *num;
-	NumNode * prev;
-};
-
-
-Stack * createNumStack() {
+Stack* createNumStack() {
 	Stack *stack = (Stack*) malloc(sizeof(Stack));
 	stack->size = 0;
 	stack->last = NULL;
@@ -40,7 +28,7 @@ void deleteNumStack(Stack **stack) {
 }
 
 void stack_push(Stack *stack, BigNum *number) {
-	normalize(number);
+	normalize(number, 1);
 	NumNode *tmp = (NumNode*) malloc(sizeof(NumNode));
 	if(tmp == NULL) {
 		exit(1);
@@ -97,6 +85,7 @@ void printNumStack(Stack *stack) {
 		printf("%zu:", index);
 		printBigNum(tmp->num);
 		index--;
+		tmp = tmp->prev;
 	}
 }
 

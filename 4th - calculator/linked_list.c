@@ -1,18 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-
-typedef struct _Node Node;
-struct _Node {
-	char value; //FIXME: w\o pointer?
-	Node *next;
-   	Node *prev;
-};
-
-typedef struct LinkedList {
-	size_t size;
-	Node *head;
-	Node *tail;
-} LinkedList;
+#include "linked_list.h"
 
 LinkedList* createLinkedList() {
 	LinkedList *tmp = (LinkedList*) malloc(sizeof(LinkedList));
@@ -22,16 +10,21 @@ LinkedList* createLinkedList() {
 	return tmp;
 }
 
-void deleteLinkedList(LinkedList **list) {//why **
+void deleteLinkedList(LinkedList **list) {
+	if(*list == NULL) 
+		return;
 	Node *tmp = (*list)->head;
 	Node *next = NULL;
-	while(tmp) {
-		next = tmp->next;
-		free(tmp);
-		tmp = next;
+	if((*list)->size > 0) {
+		while(tmp != NULL) {
+			next = tmp->next;
+			free(tmp);
+			tmp = next;
+		}
 	}
 	free(*list);
 	(*list) = NULL;
+	puts("Finished deleting LinkedList");
 }
 
 void pushFront(LinkedList *list, char data) {
@@ -161,8 +154,14 @@ Node* getByIndex(LinkedList *list, size_t index) {
 	}
 	return tmp;
 }
+/*
+int main() {
 
-/*int main() {
-
+	LinkedList *list = createLinkedList();
+	pushFront(list, 120);
+	pushFront(list, 120);
+	printf("%c\n", list->head->value);
+	printf("%c\n", list->tail->value);
+	// printLinkedList(list);
 	return 0;
 }*/

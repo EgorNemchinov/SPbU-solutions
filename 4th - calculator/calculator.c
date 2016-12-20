@@ -19,101 +19,113 @@ BigNum* subPos(BigNum* a, BigNum *b);
 BigNum* mul(BigNum *a, BigNum *b);
 BigNum* mulPos(BigNum *a, BigNum *b);
 char cmpBigNumAbs(BigNum *a, BigNum *b);
+void readInput(Stack *stack);
+BigNum* readBigNum(char ch);
 
 //TODO: split into a few files
 //TODO: make operation change first given BigNum and not create new one
 //TODO: implement stack and operations on it, free temporary BigNums
 int main() {
-	BigNum *a = NULL, *b = NULL, *res = NULL;
 	Stack *stack = createNumStack();
+	readInput(stack);
 
-	//TODO: get input into another function
-	char c;
-	char lastOper = 0;
-	LinkedList *list;
-	do {
-		list = NULL;
-		char oper = 0, sign = 0;
-		//reading string
-		do {
-			c = getchar();
-			if(c == QUIT) {
-				quit = 1;
-				
-			} 
-			if(c == '+' || c == '-' || c == '*' || c == '/') {
-				if(oper != 0) {
-					puts(MANY_OPERATORS_STRING); 
-					exit(1);
-				} else {
-					oper = c;
-				}
-			} else if(isDigit(c)) {
-				if(list == NULL) 
-					list = createLinkedList();
-				pushFront(list, (c - '0'));
-			} else if(c == '\0' || c == '\n' || c == QUIT) {
-				continue; //mb not the best idea
-			} else {
-				puts(INVALID_SYMBOL_STRING);
-				exit(1);
-			}
-		}
-		while(c > 0 && c != '\n' && c != QUIT ); //means not '\0' and not EOF
-		if(c == QUIT) 
-			break;
-		//so dirty. temporary. later we will quit after printing result
+	// printNumStack(stack);
 
-		if(list != NULL) {
-			//FIXME: later put to stack
-			//transforming '+' '-' or '' into number's sign
-			if(oper == '+' || oper == 0)
-				sign = POS;
-			else if(oper == '-') 
-				sign = NEG;
-			else {
-				puts(WRONG_NUMBER_SIGN_STRING);
-				exit(1);
-			}
-
-			stack_push(stack, createBigNum(list, sign));
-		} else {
-			switch(oper) {
-				case '+':
-					b = stack_pop(stack);
-					a = stack_peek(stack);
-					sum(a, b);
-					break;
-				case '-':
-					b = stack_pop(stack);
-					a = stack_pop(stack);
-					res = sub(a, b);
-					printBigNum(res);
-					stack_push(stack, res);
-					break;
-				case '*':
-					b = stack_pop(stack);
-					a = stack_pop(stack);
-					res = mul(a, b);
-					stack_push(stack, res);
-				default:
-					break;
-			}
-		}
-		if(oper != 0 && list == NULL) 
-			lastOper = oper;
-	}
-	while(!quit);
-
-	printNumStack(stack);
-
-	printBigNum(stack_peek(stack));
-	deleteLinkedList(&list);
+	// printBigNum(stack_peek(stack));
 	// deleteBigNum(&a);
 	// deleteBigNum(&b);
 	// deleteBigNum(&res);
-	deleteNumStack(&stack);
 	return 0;
+}
+
+BigNum* readBigNum(char ch) {
+	LinkedList* list = createLinkedList();
+	do {
+		pushFront(list, ch-'0');
+		ch = getchar();
+	} while(isDigit(ch));
+
+	BigNum* result = createBigNum(list, POS);
+	return result;
+}
+
+void readInput(Stack *stack) {
+	char ch;
+	BigNum *a, *b, *res;
+	int finished = 0;
+	do {
+		ch = getchar();
+		if(isDigit(ch)) {
+			stack_push(stack, readBigNum(ch));
+		} else if(ch == '=') {
+			BigNum* num = stack_peek(stack);
+			if(num != NULL)
+				printBigNum(stack_peek(stack));
+		} else if(ch == 'q') {
+			finished = 1;
+		} else if(ch == ' ' || ch == '\n') {
+ 			continue;
+		} else {
+			//operations
+			switch(ch) {
+				case '+':
+					if(stack->size < 2) {
+						puts("empty stack");
+						continue;
+					}
+					b = stack_pop(stack);
+					a = stack_pop(stack);
+					printBigNum(a);
+					printBigNum(b);
+					stack_push(stack, sum(a,b));
+					break;
+				case '-':
+					ch = getchar();
+					if(ch == '\n' || ch == ' ') {
+						if(stack->size < 2) {
+							puts("empty stack");
+							continue;
+						}
+						b = stack_pop(stack);
+						a = stack_pop(stack);
+						res = sub(a, b);
+						if(res == a)
+							deleteBigNum(&b);
+						else if(res == b)
+							deleteBigNum(&b);
+						stack_push(stack, res);
+					} else if(isDigit(ch)) {
+						BigNum* num = readBigNum(ch);
+						num->sign = NEG;
+						stack_push(stack, num);
+					} else {
+						printf("Unexpected symbol '%c' after '-'.\n", ch);
+					}
+					break;
+				case '*':
+					if(stack->size < 2) {
+						puts("empty stack");
+						continue;
+					}
+					b = stack_pop(stack);
+					a = stack_pop(stack);
+					printBigNum(a);
+					printBigNum(b);
+					res = mul(a, b);
+					stack_push(stack, res);
+				default:
+					//check if not any of the ones above
+					break;
+			}
+		}
+	} while(!finished);
+	deleteNumStack(&stack);
+	if(a != NULL)
+		deleteBigNum(&a);
+	if(b != NULL)
+		deleteBigNum(&b);
+	if(res != NULL)
+		deleteBigNum(&res);
 }
 
 //returns 1 if digit and 0 if not
@@ -152,7 +164,7 @@ BigNum* sumPos(BigNum* a, BigNum *b) {
 		putDigit(a, bDig->value);
 	}
 
-	normalize(a);
+	normalize(a, 1);
 	
 	deleteBigNum(&b);
 
@@ -206,7 +218,7 @@ BigNum* subPos(BigNum *a, BigNum *b) { //TODO: check exceptions like nulls
 			bDig = bDig->next;
 	}
 
-	normalize(diff);
+	normalize(diff, 1);
 	diff->sign = sign;
 
 	if(diff == b)
@@ -287,14 +299,14 @@ BigNum* mulPos(BigNum *a, BigNum *b) {
 		bNodeCur = bNode;
 		aNodeCur = aNodeCur->next;
 		aI++;
-		normalize(res);
+		normalize(res, 0);
 	}
 
-	normalize(res);
+	normalize(res, 1);
 
 	deleteBigNum(&a);
 	deleteBigNum(&b);
-	
+
 	return res;
 
 }

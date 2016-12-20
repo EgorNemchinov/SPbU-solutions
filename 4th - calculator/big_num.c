@@ -1,20 +1,14 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "linked_list.c"
-#define POS 1
-#define NEG 2
+#include "linked_list.h"
+#include "big_num.h"
+#define POS 0
+#define NEG 1
 #define BASE 10
 #define INVALID_SYMBOL_STRING "Invalid symbol was entered."
 #define MANY_OPERATORS_STRING "Too many operators."
 #define WRONG_NUMBER_SIGN_STRING "Wrong number's sign was entered."
 #define LIST_NULL_STRING "Passed LinkedList pointer is null."
-
-typedef struct _BigNum BigNum; //_BigNum?
-struct _BigNum {
-	LinkedList *digs;
-	char sign; //or a pointer? i guess with char better this one
-};
-
 
 BigNum* createBigNum(LinkedList *list, char sign) {
 	if(sign != POS && sign != NEG) {
@@ -60,7 +54,7 @@ void printBigNum(BigNum* num) {
 	}
 
 	Node *tmp = num->digs->tail;
-	if(num->sign == NEG) 
+	if(num->sign == NEG && !isZero(num)) 
 		putchar('-');
 	while(tmp) {
 		putchar(tmp->value+'0');
@@ -70,10 +64,12 @@ void printBigNum(BigNum* num) {
 }
 
 void deleteBigNum(BigNum **num) {
+	if(num == NULL)
+		return;
 	if((*num) == NULL) 
 		return;
 	deleteLinkedList(&((*num)->digs));
-	free((*num));
+	// free((*num));
 	(*num) = NULL;
 }
 
@@ -89,18 +85,19 @@ void deleteZeros(BigNum *a) {
 	}
 }
 
-void normalize(BigNum* a) {
+void normalize(BigNum* a, char delZeros) {
 	if(a == NULL) 
 		return;
-	deleteZeros(a);
+	if(delZeros)
+		deleteZeros(a);
 	Node *node = a->digs->head;
 	if(node == NULL) 
 		return;
 	Node *next = node->next;
 	char value;
-	/*puts("While started.");
 	while(node != NULL) {
 		value = node->value;
+		// printf("Current value is %d\n", value);
 		if(value >= BASE) {
 			if(next == NULL) {
 				putDigit(a, (value / BASE));
@@ -108,10 +105,19 @@ void normalize(BigNum* a) {
 				next->value += (value / BASE);
 			}
 			node->value = value % 10;
+		} else if(value < 0) {
+			//it simply must NOT be null cz we always subtract from the biggest
+			if(next != NULL) {
+				next->value -= (((value)*(-1)-1) / BASE) + 1;	
+			}
+			node->value = 10- ((value*(-1)) % 10);
 		}
 		node = next;
-		next = node->next;
-	}*/
+		if(node != NULL)
+			next = node->next;
+	}
+	if(delZeros)
+		deleteZeros(a);
 }
 
 //returns 1 if a>b, 0 if a==b and -1 if a<b
@@ -130,6 +136,16 @@ char cmpBigNumAbs(BigNum* a, BigNum *b) {
 			return -1;
 		aNode = aNode->prev;
 		bNode = bNode->prev;
+	}
+	return 0;
+}
+
+char isZero(BigNum *num) {
+	if(num->digs->size == 0) {
+		return 1;
+	} else if(num->digs->size == 1) {
+		if(num->digs->head == 0)
+			return 1;
 	}
 	return 0;
 }
