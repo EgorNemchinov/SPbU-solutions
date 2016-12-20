@@ -29,12 +29,6 @@ int main() {
 	Stack *stack = createNumStack();
 	readInput(stack);
 
-	// printNumStack(stack);
-
-	// printBigNum(stack_peek(stack));
-	// deleteBigNum(&a);
-	// deleteBigNum(&b);
-	// deleteBigNum(&res);
 	return 0;
 }
 
@@ -119,13 +113,7 @@ void readInput(Stack *stack) {
 			}
 		}
 	} while(!finished);
-	deleteNumStack(&stack);
-	if(a != NULL)
-		deleteBigNum(&a);
-	if(b != NULL)
-		deleteBigNum(&b);
-	if(res != NULL)
-		deleteBigNum(&res);
+	deleteNumStack(stack);
 }
 
 //returns 1 if digit and 0 if not

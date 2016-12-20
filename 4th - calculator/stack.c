@@ -11,10 +11,10 @@ Stack* createNumStack() {
 	return stack;
 }
 
-void deleteNumStack(Stack **stack) {
-	if(*stack == NULL) 
+void deleteNumStack(Stack *stack) {
+	if(stack == NULL) 
 		return;
-	NumNode *tmp = (*stack)->last;
+	NumNode *tmp = (stack)->last;
 	NumNode *prev = NULL;
 
 	while(tmp != NULL) {
@@ -22,9 +22,10 @@ void deleteNumStack(Stack **stack) {
 		deleteBigNum(&(tmp->num)); //FIXME: are there exceptions?
 		free(tmp);
 		tmp = prev;
+		stack->size--;
 	}
-	free(*stack);
-	(*stack) = NULL; 
+	free(stack);
+	// (*stack) = NULL; 
 }
 
 void stack_push(Stack *stack, BigNum *number) {

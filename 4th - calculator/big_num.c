@@ -69,13 +69,14 @@ void deleteBigNum(BigNum **num) {
 	if((*num) == NULL) 
 		return;
 	deleteLinkedList(&((*num)->digs));
-	// free((*num));
+	free((*num));
 	(*num) = NULL;
 }
 
 void deleteZeros(BigNum *a) {
 	Node *node = a->digs->tail;
-	if(node == NULL) return;
+	if(node == NULL)
+		return;
 	while(node != NULL && node != a->digs->head) {
 		if(node->value != 0)
 			return;

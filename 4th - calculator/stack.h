@@ -14,7 +14,7 @@ struct _Stack_Node {
 };
 
 Stack * createNumStack();
-void deleteNumStack(Stack **stack);
+void deleteNumStack(Stack *stack);
 void stack_push(Stack *stack, BigNum *number);
 BigNum* stack_pop(Stack *stack);
 BigNum* stack_peek(Stack *stack);
