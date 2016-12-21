@@ -18,13 +18,15 @@ BigNum* sub(BigNum* a, BigNum *b);
 BigNum* subPos(BigNum* a, BigNum *b);
 BigNum* mul(BigNum *a, BigNum *b);
 BigNum* mulPos(BigNum *a, BigNum *b);
+BigNum* mulInt(BigNum *a, int b);
+BigNum* divide(BigNum *a, BigNum *b);
+BigNum* divPos(BigNum *a, BigNum *b);
 char cmpBigNumAbs(BigNum *a, BigNum *b);
 void readInput(Stack *stack);
 BigNum* readBigNum(char ch);
+int howMany(BigNum *one, BigNum* another);
 
 //TODO: split into a few files
-//TODO: make operation change first given BigNum and not create new one
-//TODO: implement stack and operations on it, free temporary BigNums
 int main() {
 	Stack *stack = createNumStack();
 	readInput(stack);
@@ -64,29 +66,23 @@ void readInput(Stack *stack) {
 			switch(ch) {
 				case '+':
 					if(stack->size < 2) {
-						puts("empty stack");
+						puts("Unable to summarize: empty stack");
 						continue;
 					}
 					b = stack_pop(stack);
 					a = stack_pop(stack);
-					printBigNum(a);
-					printBigNum(b);
 					stack_push(stack, sum(a,b));
 					break;
 				case '-':
 					ch = getchar();
 					if(ch == '\n' || ch == ' ') {
 						if(stack->size < 2) {
-							puts("empty stack");
+							puts("Unable to subtract: empty stack");
 							continue;
 						}
 						b = stack_pop(stack);
 						a = stack_pop(stack);
 						res = sub(a, b);
-						if(res == a)
-							deleteBigNum(&b);
-						else if(res == b)
-							deleteBigNum(&b);
 						stack_push(stack, res);
 					} else if(isDigit(ch)) {
 						BigNum* num = readBigNum(ch);
@@ -98,15 +94,24 @@ void readInput(Stack *stack) {
 					break;
 				case '*':
 					if(stack->size < 2) {
-						puts("empty stack");
+						puts("Unable to multiply: empty stack");
 						continue;
 					}
 					b = stack_pop(stack);
 					a = stack_pop(stack);
-					printBigNum(a);
-					printBigNum(b);
 					res = mul(a, b);
 					stack_push(stack, res);
+					break;
+				case '/':
+					if(stack->size < 2) {
+						puts("Unable to divide: empty stack");
+						continue;
+					}
+					b = stack_pop(stack);
+					a = stack_pop(stack);
+					res = divide(a, b);
+					stack_push(stack, res);
+					break;
 				default:
 					//check if not any of the ones above
 					break;
@@ -180,8 +185,7 @@ BigNum* sub(BigNum *a, BigNum *b) {
 	return diff;
 }
 
-//TODO: subtract second from first!
-BigNum* subPos(BigNum *a, BigNum *b) { //TODO: check exceptions like nulls
+BigNum* subPos(BigNum *a, BigNum *b) { 
 	BigNum* diff;
 	char sign;
 	Node *aDig, *bDig;
@@ -239,6 +243,7 @@ BigNum* mul(BigNum *a, BigNum *b) {
 }
 
 
+//yes, I do know this is very clumsy way of doing it
 BigNum* mulPos(BigNum *a, BigNum *b) {
 	BigNum* res = createBigNumEmpty();
 	Node *aNode, *bNode;
@@ -297,6 +302,102 @@ BigNum* mulPos(BigNum *a, BigNum *b) {
 
 	return res;
 
+}
+
+BigNum* mulInt(BigNum *a, int b) {
+	BigNum *res = createBigNumEmpty();
+	int sign;
+	res->sign = a->sign;
+	if(b < 0) {
+		if(a->sign == POS) 
+			res->sign = NEG;
+		else 
+			res->sign = POS;
+		b *= -1;
+	} else if(b == 0) {
+		putDigit(res, 0);
+		return res;
+	}
+
+	Node *tmp = a->digs->tail;
+	while(tmp != NULL) {
+		pushFront(res->digs, (tmp->value)*b);
+		tmp = tmp->prev;
+	}
+	normalize(res, 1);
+	return res;
+}
+
+BigNum* divide(BigNum *a, BigNum *b) {
+	BigNum *res;
+	int sign = POS;
+
+	if(a->sign == NEG) {
+		if(b->sign == POS)
+			sign = NEG; 
+	} else {
+		if(b->sign == NEG)
+			sign == NEG;
+	}
+
+	if(isZero(b)) {
+		printf("Error: division by zero.");
+		exit(1);
+	}
+
+	res = divPos(a, b);
+	res->sign = sign;
+	return res;
+}
+
+BigNum* divPos(BigNum *a, BigNum *b) {
+	LinkedList *list = createLinkedList();
+	BigNum *res, *temp;
+	Node *cur;
+
+	if(cmpBigNumAbs(a, b) < 0) {
+		pushFront(list, 0);
+		res = createBigNum(list, POS);
+		return res;
+	}	
+
+	temp = createBigNumEmpty();
+	res = createBigNumEmpty();
+	cur = a->digs->tail;
+	pushFront(temp->digs, cur->value);
+
+	while(cmpBigNumAbs(temp, b) < 0) {
+		cur = cur->prev;
+		//cur != null cz a>=b
+		pushFront(temp->digs, cur->value);
+	}
+
+	do {
+		int count = howMany(b, temp);
+		pushFront(res->digs, count);
+		temp = subPos(temp, mulInt(b, count));
+		cur = cur->prev;
+		if(cur != NULL) {
+			pushFront(temp->digs, cur->value);
+		}
+
+	} while(cur != NULL);
+
+	deleteBigNum(&temp);
+	deleteBigNum(&a);
+	deleteBigNum(&b);
+	normalize(res, 1);
+	return res;
+}
+
+//how many ones in another
+int howMany(BigNum *one, BigNum* another) {
+	int count;
+	for (count = 0; count < 10; ++count)
+	{
+		if((cmpBigNumAbs(mulInt(one, count), another) <= 0) && (cmpBigNumAbs(mulInt(one, count+1), another) > 0))
+			return count;
+	}
 }
 
 char maxChar(char a, char b) {
