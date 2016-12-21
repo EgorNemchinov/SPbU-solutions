@@ -24,7 +24,6 @@ void deleteLinkedList(LinkedList **list) {
 	}
 	free(*list);
 	(*list) = NULL;
-	puts("Finished deleting LinkedList");
 }
 
 void pushFront(LinkedList *list, char data) {
