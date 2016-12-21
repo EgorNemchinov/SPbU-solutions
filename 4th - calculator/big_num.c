@@ -145,7 +145,7 @@ char isZero(BigNum *num) {
 	if(num->digs->size == 0) {
 		return 1;
 	} else if(num->digs->size == 1) {
-		if(num->digs->head == 0)
+		if(num->digs->head->value == 0)
 			return 1;
 	}
 	return 0;
