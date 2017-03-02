@@ -6,5 +6,11 @@ interface SearchTree<T> {
     fun find(value: T): Node<T>?
     fun min(): Node<T>?
     fun max(): Node<T>?
-    //operator plus() -> insert()?
+
+    operator fun plusAssign(value: T) {
+        insert(value)
+    }
+    operator fun minusAssign(value: T) {
+        remove(value)
+    }
 }

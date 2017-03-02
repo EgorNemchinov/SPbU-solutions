@@ -13,25 +13,25 @@ class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null)
         var currentBinarySearchNode: BinarySearchNode<T> = root!!
         while (true) {
             if(value > currentBinarySearchNode.value) {
-                if(currentBinarySearchNode.children.right == null) {
-                    currentBinarySearchNode.setRightChild(BinarySearchNode(value))
+                if(currentBinarySearchNode.right == null) {
+                    currentBinarySearchNode.right = BinarySearchNode(value)
                     return
                 }
-                currentBinarySearchNode = currentBinarySearchNode.children.right!!
+                currentBinarySearchNode = currentBinarySearchNode.right!!
             } else if(value < currentBinarySearchNode.value) {
-                if(currentBinarySearchNode.children.left == null) {
-                    currentBinarySearchNode.setLeftChild(BinarySearchNode(value))
+                if(currentBinarySearchNode.left == null) {
+                    currentBinarySearchNode.left = BinarySearchNode(value)
                     return
                 }
-                currentBinarySearchNode = currentBinarySearchNode.children.left!!
+                currentBinarySearchNode = currentBinarySearchNode.left!!
             } else {
-                //Tree already contains this value
+                println("Attemopt to add node that is already contain in this tree.")
                 return
             }
         }
     }
 
-    //returns false if there was no node to be removed
+    //returns false if there was no node to be removed or an error occured
     override fun remove(value: T): Boolean {
         //finding binarySearchNode to be removed
         var binarySearchNode: BinarySearchNode<T>? = find(value) ?: return false
@@ -40,18 +40,17 @@ class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null)
                 binarySearchNode.setParentsReferenceTo(null)
             }
             1 -> {
-                //FIXME: .first()
-                var child = binarySearchNode.children.toList().first()
+                var child = binarySearchNode.childrenToList().firstOrNull() ?: return false
                 child.parent = binarySearchNode.parent
                 binarySearchNode.setParentsReferenceTo(child)
             }
             2 -> {
                 //searching for minimum in the right tree. could be max in the left tree?
-                val replacement: BinarySearchNode<T> = BinarySearchTree(binarySearchNode.children.right).min()!!
+                val replacement: BinarySearchNode<T> = BinarySearchTree(binarySearchNode.right).min()!!
                 //replacement is a leaf so has no children
                 replacement.setParentsReferenceTo(null)
-                replacement.setLeftChild(binarySearchNode.children.left)
-                replacement.setRightChild(binarySearchNode.children.right)
+                replacement.left = binarySearchNode.left
+                replacement.right = binarySearchNode.right
 
                 //setting parent's reference
                  if(binarySearchNode.parent == null)
@@ -60,8 +59,8 @@ class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null)
                      binarySearchNode.setParentsReferenceTo(replacement)
                  }
 
-                binarySearchNode.children.left!!.parent = replacement
-                binarySearchNode.children.right!!.parent = replacement
+                binarySearchNode.left!!.parent = replacement
+                binarySearchNode.right!!.parent = replacement
             }
         }
         return true
@@ -73,15 +72,15 @@ class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null)
         var currentBinarySearchNode: BinarySearchNode<T> = root!!
         while (true) {
             if(value > currentBinarySearchNode.value) {
-                if(currentBinarySearchNode.children.right == null) {
+                if(currentBinarySearchNode.right == null) {
                     return null
                 }
-                currentBinarySearchNode = currentBinarySearchNode.children.right!!
+                currentBinarySearchNode = currentBinarySearchNode.right!!
             } else if(value < currentBinarySearchNode.value) {
-                if(currentBinarySearchNode.children.left == null) {
+                if(currentBinarySearchNode.left == null) {
                     return null
                 }
-                currentBinarySearchNode = currentBinarySearchNode.children.left!!
+                currentBinarySearchNode = currentBinarySearchNode.left!!
             } else {
                 return currentBinarySearchNode
             }
@@ -94,10 +93,10 @@ class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null)
             return null
         var currentBinarySearchNode: BinarySearchNode<T> = root!!
         while(true) {
-            if(root!!.children.left == null)
+            if(root!!.left == null)
                 return currentBinarySearchNode
             else
-                return BinarySearchTree(root!!.children.left).min()
+                return BinarySearchTree(root!!.left).min()
         }
     }
 
@@ -106,24 +105,10 @@ class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null)
             return null
         var currentBinarySearchNode: BinarySearchNode<T> = root!!
         while(true) {
-            if(root!!.children.right == null)
+            if(root!!.right == null)
                 return currentBinarySearchNode
             else
-                return BinarySearchTree(root!!.children.right).min()
+                return BinarySearchTree(root!!.right).min()
         }
-    }
-
-    fun print() {
-        if(root != null)
-            this.print(root!!)
-        println()
-    }
-
-    private fun print(root: BinarySearchNode<T>) {
-        if(root.children.left != null)
-            print(root.children.left!!)
-        print(" " + root.value)
-        if(root.children.right != null)
-            print(root.children.right!!)
     }
 }

@@ -1,7 +1,8 @@
 package common
 
 interface Node<T> {
-//    var value: T
-//    var parent: Node<T>?
-//    var children: ChildrenNodes<T>
+    fun value(): T?
+    fun parent() : Node<T>?
+    fun leftChild() : Node<T>?
+    fun rightChild() : Node<T>?
 }

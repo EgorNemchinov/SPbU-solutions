@@ -1,18 +1,14 @@
-import bst.BinarySearchNode
-import bst.BinarySearchTree
+import rbt.*
 
 fun main(args: Array<String>) {
-    var tree: BinarySearchTree<Int> = BinarySearchTree(BinarySearchNode(4))
-    tree.insert(2)
-    tree.insert(6)
-    tree.insert(6)
-    tree.insert(8)
-    tree.insert(5)
-    tree.insert(3)
-
-    tree.print()
-    tree.remove(4)
-    tree.remove(3)
-    println("After removal:")
-    tree.print()
+    var tree: RedBlackTree<Int> = RedBlackTree(RedBlackNode(6))
+    tree += 4
+    tree += 7
+    tree += 5
+    tree += 10
+    tree += 3
+    tree += 1
+    tree += 9
+    tree += 8
+    tree.draw()
 }

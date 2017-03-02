@@ -1,50 +1,79 @@
 package bst
 
 import common.*
+import rbt.RedBlackNode
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 open class BinarySearchNode<T>(var value: T, var parent: BinarySearchNode<T>? = null,
-                               var children: ChildrenNodes<BinarySearchNode<T>> = ChildrenNodes()) : Node<T> {
-
-    open fun setLeftChild(node: BinarySearchNode<T>?) {
-        if(node == this) {
-            println("Attempt to set a node as a child of itself")
-            return
+                               left: BinarySearchNode<T>? = null,
+                               right: BinarySearchNode<T>? = null) : Node<T> {
+    var left: BinarySearchNode<T>? = left
+        set(value) {
+            if(value == this) {
+                println("Attempt to set a node as a child of itself")
+                return
+            }
+            field = value
+            if(value != null)
+                value.parent = this
         }
-        children.left = node
-        if(node != null)
-            node.parent = this
-    }
-    open fun setRightChild(node: BinarySearchNode<T>?) {
-        if(node == this) {
-            println("Attempt to set a node as a child of itself")
-            return
+    var right: BinarySearchNode<T>? = right
+        set(value) {
+            if(value == this) {
+                println("Attempt to set a node as a child of itself")
+                return
+            }
+            field = value
+            if(value != null)
+                value.parent = this
         }
-        children.right = node
-        if(node != null)
-            node.parent = this
+
+    override fun value(): T? {
+        return value
     }
 
-    open fun setParentsReferenceTo(newChild: BinarySearchNode<T>?) {
+    override fun parent(): Node<T>? {
+        return parent
+    }
+
+    override fun leftChild(): Node<T>? {
+        return left
+    }
+
+    override fun rightChild(): Node<T>? {
+        return right
+    }
+
+    fun setParentsReferenceTo(newChild: BinarySearchNode<T>?) {
         if(parent == null)
             return
-        if(parent!!.children.left == this)
-            parent!!.setLeftChild(newChild)
-        else if(parent!!.children.right == this)
-            parent!!.setRightChild(newChild)
+        if(parent!!.left == this)
+            parent!!.left = newChild
+        else if(parent!!.right == this)
+            parent!!.right = newChild
     }
 
-    open fun amountOfChildren(): Int {
+    fun childrenToList(): List<BinarySearchNode<T>> {
+        var list: List<BinarySearchNode<T>> = listOf()
+        if(left != null)
+            list += left!!
+        if(right != null)
+            list += right!!
+        return list
+    }
+
+    fun amountOfChildren(): Int {
         var count: Int = 0;
-        if(children.left != null)
+        if(left != null)
             count++
-        if(children.right != null)
+        if(right != null)
             count++
         return count
     }
 
     override fun toString(): String {
-        //FIXME: change bst.BinarySearchNode's toString()
-        return "bst.BinarySearchNode(value=$value, parent=$parent, children={})"
+        return "$value"
     }
 
 }
