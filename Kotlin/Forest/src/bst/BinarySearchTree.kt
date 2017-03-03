@@ -1,9 +1,13 @@
 package bst
 
-import common.SearchTree
-import common.Tree
+import common.*
+import tools.Logger
 
 class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null) : Tree<T>(root), SearchTree<T> {
+
+    override fun root(): Node<T>? {
+        return root
+    }
 
     override fun insert(value: T) {
         if(root == null) {
@@ -25,13 +29,14 @@ class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null)
                 }
                 currentBinarySearchNode = currentBinarySearchNode.left!!
             } else {
-                println("Attemopt to add node that is already contain in this tree.")
+                Logger.warning("Attempt to add node that is already contain in this tree.")
                 return
             }
         }
     }
 
     //returns false if there was no node to be removed or an error occured
+    //FIXME: nullpointer exception in 67-68
     override fun remove(value: T): Boolean {
         //finding binarySearchNode to be removed
         var binarySearchNode: BinarySearchNode<T>? = find(value) ?: return false

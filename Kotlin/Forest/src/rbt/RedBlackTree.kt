@@ -1,13 +1,14 @@
 package rbt
 
 import common.*
+import tools.Logger
 
 class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : SearchTree<T>, Tree<T>(root) {
     //it's better than null because it's black
     val nil: RedBlackNode<T> = RedBlackNode(null, isBlack = true)
 
     override fun root(): RedBlackNode<T>? {
-        return root!!
+        return root
     }
 
     override fun insert(value: T) {
@@ -36,7 +37,7 @@ class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : Search
                 } else
                     currentNode = currentNode.left!!
             } else {
-                println("Attemopt to add node that is already contained in this tree.")
+                Logger.warning("Attempt to add node that is already contained in this tree.")
                 return
             }
         }

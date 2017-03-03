@@ -1,9 +1,6 @@
 package bst
 
 import common.*
-import rbt.RedBlackNode
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
 open class BinarySearchNode<T>(var value: T, var parent: BinarySearchNode<T>? = null,
                                left: BinarySearchNode<T>? = null,

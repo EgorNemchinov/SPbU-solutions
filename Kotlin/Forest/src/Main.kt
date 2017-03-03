@@ -1,14 +1,11 @@
+import common.Tree
 import rbt.*
+import tools.InputHandler
 
 fun main(args: Array<String>) {
-    var tree: RedBlackTree<Int> = RedBlackTree(RedBlackNode(6))
-    tree += 4
-    tree += 7
-    tree += 5
-    tree += 10
-    tree += 3
-    tree += 1
-    tree += 9
-    tree += 8
-    tree.draw()
+    val inputHandler: InputHandler = InputHandler()
+    inputHandler.start()
+    var tree = inputHandler.getTree()
+    if(tree != null)
+        tree.draw()
 }

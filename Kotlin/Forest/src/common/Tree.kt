@@ -1,8 +1,10 @@
 package common
 
-import rbt.RedBlackNode
+import tools.Logger
 
 open class Tree<T>(private var root: Node<T>?) {
+
+    protected val logger: Logger = Logger()
 
     open protected fun root(): Node<T>?  {
         return root
@@ -33,7 +35,7 @@ open class Tree<T>(private var root: Node<T>?) {
         if(node.leftChild() != null) {
             this.print(node.leftChild()!!)
         }
-        print(" $node ")
+        print(" ${if(node.value() != null) "$node " else ""}")
         if(node.rightChild() != null) {
             this.print(node.rightChild()!!)
         }
@@ -42,8 +44,9 @@ open class Tree<T>(private var root: Node<T>?) {
     //TODO: implement using array of strings
     /**intellectual property of Vladimir Maltsev */
     fun draw(curNode: Node<T>? = root(), divider: String = "") {
-        if(curNode == null || curNode.value() == null)
+        if(curNode == null || curNode.value() == null) {
             return
+        }
         var specSymbol = ""
         if(curNode.parent() != null) {
             if(curNode == curNode.parent()!!.leftChild())

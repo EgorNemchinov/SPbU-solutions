@@ -1,6 +1,7 @@
 package rbt
 
 import common.*
+import tools.Logger
 
 open class RedBlackNode<T>(var value: T?, var parent: RedBlackNode<T>? = null,
                            left: RedBlackNode<T>? = null,
@@ -9,7 +10,7 @@ open class RedBlackNode<T>(var value: T?, var parent: RedBlackNode<T>? = null,
     var left: RedBlackNode<T>? = left
         set(value) {
             if(value == this) {
-                println("Attempt to set a node as a child of itself")
+                Logger.error("Attempt to set a node as a child of itself")
                 return
             }
             field = value
@@ -19,7 +20,7 @@ open class RedBlackNode<T>(var value: T?, var parent: RedBlackNode<T>? = null,
     var right: RedBlackNode<T>? = right
         set(value) {
             if(value == this) {
-                println("Attempt to set a node as a child of itself")
+                Logger.error("Attempt to set a node as a child of itself")
                 return
             }
             field = value
