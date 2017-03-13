@@ -30,6 +30,16 @@ class InputHandler {
                 getTree()?.draw()
             } else if(str.contains("print")) {
                 getTree()?.print()
+            } else if(str.contains("count")) {
+                var tree = getTree()
+                if(tree != null && tree is RedBlackTree)
+                    println("${tree.countBlackNodesToLeaf()} black nodes from root to leaf.")
+            } else if(str.contains("debug")) {
+                if(list[1] == "on")
+                    Logger.debugging = true
+                else if(list[2] == "off") {
+                    Logger.debugging = false
+                }
             } else if(str.contains("end")) {
                 return
             } else {

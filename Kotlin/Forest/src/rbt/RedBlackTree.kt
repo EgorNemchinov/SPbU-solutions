@@ -3,7 +3,7 @@ package rbt
 import common.*
 import tools.Logger
 
-class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : SearchTree<T>, Tree<T>(root) {
+class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : SearchTree<T>(root) {
     //it's better than null because it's black
     val nil: RedBlackNode<T> = RedBlackNode(null, isBlack = true)
 
@@ -12,7 +12,7 @@ class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : Search
     }
 
     override fun insert(value: T) {
-        if(root == null) {
+        if (root == null) {
             root = RedBlackNode(value)
             root!!.isBlack = true
             root!!.left = nil
@@ -22,15 +22,15 @@ class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : Search
         var inserted: Boolean = false
         var currentNode: RedBlackNode<T> = root!!
         while (!inserted) {
-            if(value > currentNode.value!!) {
-                if(currentNode.right == nil || currentNode.right == null) {
+            if (value > currentNode.value!!) {
+                if (currentNode.right == nil || currentNode.right == null) {
                     currentNode.right = RedBlackNode(value)
                     currentNode = currentNode.right!!
                     inserted = true
                 } else
                     currentNode = currentNode.right!!
-            } else if(value < currentNode.value!!) {
-                if(currentNode.left == nil || currentNode.left == null) {
+            } else if (value < currentNode.value!!) {
+                if (currentNode.left == nil || currentNode.left == null) {
                     currentNode.left = RedBlackNode(value)
                     currentNode = currentNode.left!!
                     inserted = true
@@ -43,29 +43,31 @@ class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : Search
         }
         currentNode.left = nil
         currentNode.right = nil
-        correct(currentNode)
+        correctAfterInsertion(currentNode)
         root!!.isBlack = true
     }
 
-    fun correct(node: RedBlackNode<T>) {
+    fun correctAfterInsertion(node: RedBlackNode<T>) {
         //if parent isn't red no need to fix
-        if(node.parent != null && node.parent!!.isBlack)
+        if (node.parent != null && node.parent!!.isBlack)
             return
         var currentNode = node
         var grandparent = currentNode.grandparent()
-         if(grandparent == null) {
+        if (grandparent == null) {
             root!!.isBlack = true
             return
         }
         var uncle = currentNode.uncle()
-        if(currentNode.parent!!.isLeftChild()) {
-            if(!uncle!!.isBlack) {
+        if (currentNode.parent!!.isLeftChild()) {
+            if (!uncle!!.isBlack) {
+                //uncle is red then recolor uncle parent and grandparent
                 currentNode.parent!!.isBlack = true
                 uncle.isBlack = true
                 grandparent.isBlack = false
+                correctAfterInsertion(grandparent)
             } else {
                 //uncle is black
-                if(currentNode.isRightChild()) {
+                if (currentNode.isRightChild()) {
                     //converting left triangle to left line
                     currentNode.parent!!.rotateLeft()
                     currentNode = currentNode.left!!
@@ -75,13 +77,14 @@ class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : Search
                 currentNode.parent!!.isBlack = true
                 grandparent.isBlack = false
             }
-        } else if(currentNode.parent!!.isRightChild()) {
-            if(!uncle!!.isBlack) {
+        } else if (currentNode.parent!!.isRightChild()) {
+            if (!uncle!!.isBlack) {
                 currentNode.parent!!.isBlack = true
                 uncle.isBlack = true
                 grandparent.isBlack = false
+                correctAfterInsertion(grandparent)
             } else {
-                if(currentNode.isLeftChild()) {
+                if (currentNode.isLeftChild()) {
                     //converting right triangle to right line
                     currentNode.parent!!.rotateRight()
                     currentNode = currentNode.right!!
@@ -92,12 +95,12 @@ class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : Search
                 grandparent.isBlack = false
             }
         }
-        if(root!!.parent != null) {
+        if (root!!.parent != null) {
             root = calculateRoot() as RedBlackNode<T>?
         }
-        if(currentNode.parent != null && !currentNode.parent!!.isBlack) {
+        if (currentNode.parent != null && !currentNode.parent!!.isBlack) {
             //continue for parent if it's red
-            correct(currentNode.parent!!)
+            correctAfterInsertion(currentNode.parent!!)
         }
     }
 
@@ -106,14 +109,47 @@ class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : Search
     }
 
     override fun find(value: T): RedBlackNode<T>? {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (root == null)
+            return null
+        var currentNode: RedBlackNode<T> = root!!
+        while (true) {
+            if (value > currentNode.value!!) {
+                if (currentNode.right == nil) { //mb check for null too
+                    return null
+                }
+                currentNode = currentNode.right!!
+            } else if (value < currentNode.value!!) {
+                if (currentNode.left == nil) {
+                    return null
+                }
+                currentNode = currentNode.left!!
+            } else {
+                return currentNode
+            }
+        }
     }
 
     override fun min(): RedBlackNode<T>? {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if(root == null)
+            return null
+        var currentNode: RedBlackNode<T> = root!!
+        while(true) {
+            if(root!!.left == null || root!!.left!!.value == null)
+                return currentNode
+            else
+                return RedBlackTree(root!!.left).min()
+        }
     }
 
     override fun max(): RedBlackNode<T>? {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if(root == null)
+            return null
+        var currentNode: RedBlackNode<T> = root!!
+        while(true) {
+            if(root!!.right == null || root!!.right!!.value == null)
+                return currentNode
+            else
+                return RedBlackTree(root!!.right).min()
+        }
     }
 }

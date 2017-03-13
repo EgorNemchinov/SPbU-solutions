@@ -3,6 +3,7 @@ package rbt
 import common.*
 import tools.Logger
 
+//TODO: isBlack -> enum
 open class RedBlackNode<T>(var value: T?, var parent: RedBlackNode<T>? = null,
                            left: RedBlackNode<T>? = null,
                            right: RedBlackNode<T>? = null,
@@ -74,20 +75,30 @@ open class RedBlackNode<T>(var value: T?, var parent: RedBlackNode<T>? = null,
             return null
     }
 
+    fun brother(): RedBlackNode<T>? {
+        if(parent == null)
+            return null
+        if(isLeftChild()) {
+            return parent!!.right
+        } else {
+            return parent!!.left
+        }
+    }
+
     fun childrenToList(): List<RedBlackNode<T>> {
         var list: List<RedBlackNode<T>> = listOf()
-        if(left != null)
+        if(left != null && left!!.value != null)
             list += left!!
-        if(right != null)
+        if(right != null && right!!.value != null)
             list += right!!
         return list
     }
 
     fun amountOfChildren(): Int {
-        var count: Int = 0;
-        if(left != null)
+        var count: Int = 0
+        if(left != null && left!!.value != null)
             count++
-        if(right != null)
+        if(right != null && right!!.value != null)
             count++
         return count
     }
@@ -117,6 +128,10 @@ open class RedBlackNode<T>(var value: T?, var parent: RedBlackNode<T>? = null,
     }
     fun isRightChild(): Boolean {
         return parent != null && parent!!.right == this
+    }
+
+    fun recolor() {
+        isBlack = !isBlack
     }
 
     override fun toString(): String {

@@ -3,7 +3,7 @@ package bst
 import common.*
 import tools.Logger
 
-class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null) : Tree<T>(root), SearchTree<T> {
+class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null) : SearchTree<T>(root) {
 
     override fun root(): Node<T>? {
         return root
@@ -74,20 +74,20 @@ class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null)
     override fun find(value: T): BinarySearchNode<T>? {
         if(root == null)
             return null
-        var currentBinarySearchNode: BinarySearchNode<T> = root!!
+        var currentNode: BinarySearchNode<T> = root!!
         while (true) {
-            if(value > currentBinarySearchNode.value) {
-                if(currentBinarySearchNode.right == null) {
+            if(value > currentNode.value) {
+                if(currentNode.right == null) {
                     return null
                 }
-                currentBinarySearchNode = currentBinarySearchNode.right!!
-            } else if(value < currentBinarySearchNode.value) {
-                if(currentBinarySearchNode.left == null) {
+                currentNode = currentNode.right!!
+            } else if(value < currentNode.value) {
+                if(currentNode.left == null) {
                     return null
                 }
-                currentBinarySearchNode = currentBinarySearchNode.left!!
+                currentNode = currentNode.left!!
             } else {
-                return currentBinarySearchNode
+                return currentNode
             }
         }
     }
@@ -96,10 +96,10 @@ class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null)
     override fun min(): BinarySearchNode<T>? {
         if(root == null)
             return null
-        var currentBinarySearchNode: BinarySearchNode<T> = root!!
+        var currentNode: BinarySearchNode<T> = root!!
         while(true) {
             if(root!!.left == null)
-                return currentBinarySearchNode
+                return currentNode
             else
                 return BinarySearchTree(root!!.left).min()
         }
@@ -108,10 +108,10 @@ class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null)
     override fun max(): BinarySearchNode<T>? {
         if(root == null)
             return null
-        var currentBinarySearchNode: BinarySearchNode<T> = root!!
+        var currentNode: BinarySearchNode<T> = root!!
         while(true) {
             if(root!!.right == null)
-                return currentBinarySearchNode
+                return currentNode
             else
                 return BinarySearchTree(root!!.right).min()
         }

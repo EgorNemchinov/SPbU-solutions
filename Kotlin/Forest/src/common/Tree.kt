@@ -23,6 +23,7 @@ open class Tree<T>(private var root: Node<T>?) {
     }
 
     fun print() {
+        Logger.debugInfo("Called print at tree with root $root")
         if(root() == null) {
             println("Tree is empty.")
         } else {
@@ -31,6 +32,7 @@ open class Tree<T>(private var root: Node<T>?) {
         }
     }
 
+    //TODO: implement using iterable
     private fun print(node: Node<T>) {
         if(node.leftChild() != null) {
             this.print(node.leftChild()!!)
@@ -41,9 +43,11 @@ open class Tree<T>(private var root: Node<T>?) {
         }
     }
 
-    //TODO: implement using array of strings
+    //TODO: implement using array of strings, ?bfs?
     /**intellectual property of Vladimir Maltsev */
     fun draw(curNode: Node<T>? = root(), divider: String = "") {
+        if(curNode == root())
+            Logger.debugInfo("Drawing tree with root ${root()}")
         if(curNode == null || curNode.value() == null) {
             return
         }

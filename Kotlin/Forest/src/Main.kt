@@ -1,5 +1,3 @@
-import common.Tree
-import rbt.*
 import tools.InputHandler
 
 fun main(args: Array<String>) {
