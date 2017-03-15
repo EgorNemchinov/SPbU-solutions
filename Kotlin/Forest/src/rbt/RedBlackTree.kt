@@ -129,27 +129,4 @@ class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : Search
         }
     }
 
-    override fun min(): RedBlackNode<T>? {
-        if(root == null)
-            return null
-        var currentNode: RedBlackNode<T> = root!!
-        while(true) {
-            if(root!!.left == null || root!!.left!!.value == null)
-                return currentNode
-            else
-                return RedBlackTree(root!!.left).min()
-        }
-    }
-
-    override fun max(): RedBlackNode<T>? {
-        if(root == null)
-            return null
-        var currentNode: RedBlackNode<T> = root!!
-        while(true) {
-            if(root!!.right == null || root!!.right!!.value == null)
-                return currentNode
-            else
-                return RedBlackTree(root!!.right).min()
-        }
-    }
 }

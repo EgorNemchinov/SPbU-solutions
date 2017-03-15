@@ -27,11 +27,11 @@ class InputHandler {
                 if(list.size > 1)
                     parseValuesToTree(list.subList(1, list.lastIndex + 1), tree)
             } else if(str.contains("draw")) {
-                getTree()?.draw()
+                tree?.draw()
             } else if(str.contains("print")) {
-                getTree()?.print()
+                tree?.print()
             } else if(str.contains("count")) {
-                var tree = getTree()
+                var tree = tree
                 if(tree != null && tree is RedBlackTree)
                     println("${tree.countBlackNodesToLeaf()} black nodes from root to leaf.")
             } else if(str.contains("debug")) {
@@ -84,13 +84,4 @@ class InputHandler {
         }
     }
 
-
-    fun getTree() : Tree<Int>? {
-        if(tree is RedBlackTree<Int>)
-            return tree as RedBlackTree<Int>
-        if(tree is BinarySearchTree<Int>) {
-            return tree as BinarySearchTree<Int>
-        }
-        return null
-    }
 }

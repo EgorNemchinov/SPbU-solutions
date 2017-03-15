@@ -51,7 +51,7 @@ class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null)
             }
             2 -> {
                 //searching for minimum in the right tree. could be max in the left tree?
-                val replacement: BinarySearchNode<T> = BinarySearchTree(binarySearchNode.right).min()!!
+                val replacement: BinarySearchNode<T> = (BinarySearchTree(binarySearchNode.right).min() as BinarySearchNode<T>?)!!
                 //replacement is a leaf so has no children
                 replacement.setParentsReferenceTo(null)
                 replacement.left = binarySearchNode.left
@@ -92,28 +92,4 @@ class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null)
         }
     }
 
-    //return null if tree has null root
-    override fun min(): BinarySearchNode<T>? {
-        if(root == null)
-            return null
-        var currentNode: BinarySearchNode<T> = root!!
-        while(true) {
-            if(root!!.left == null)
-                return currentNode
-            else
-                return BinarySearchTree(root!!.left).min()
-        }
-    }
-
-    override fun max(): BinarySearchNode<T>? {
-        if(root == null)
-            return null
-        var currentNode: BinarySearchNode<T> = root!!
-        while(true) {
-            if(root!!.right == null)
-                return currentNode
-            else
-                return BinarySearchTree(root!!.right).min()
-        }
-    }
 }

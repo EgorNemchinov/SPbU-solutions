@@ -123,13 +123,6 @@ open class RedBlackNode<T>(var value: T?, var parent: RedBlackNode<T>? = null,
         this.left = floatingNode
     }
 
-    fun isLeftChild(): Boolean {
-        return parent != null && parent!!.left == this
-    }
-    fun isRightChild(): Boolean {
-        return parent != null && parent!!.right == this
-    }
-
     fun recolor() {
         isBlack = !isBlack
     }
