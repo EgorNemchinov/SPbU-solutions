@@ -1,11 +1,12 @@
 package rbt
 
+import bst.BinarySearchNode
 import common.*
 import tools.Logger
 
-class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : SearchTree<T>(root) {
+class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : SearchTree<T>() {
     //it's better than null because it's black
-    val nil: RedBlackNode<T> = RedBlackNode(null, isBlack = true)
+    val nil: RedBlackNode<T> = RedBlackNode(BinaryNodeValue(), isBlack = true)
 
     override fun root(): RedBlackNode<T>? {
         return root
@@ -22,18 +23,20 @@ class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : Search
         var inserted: Boolean = false
         var currentNode: RedBlackNode<T> = root!!
         while (!inserted) {
-            if (value > currentNode.value!!) {
+            if (currentNode.value < value) {
                 if (currentNode.right == nil || currentNode.right == null) {
                     currentNode.right = RedBlackNode(value)
                     currentNode = currentNode.right!!
                     inserted = true
+                    break
                 } else
                     currentNode = currentNode.right!!
-            } else if (value < currentNode.value!!) {
+            } else if (currentNode.value > value) {
                 if (currentNode.left == nil || currentNode.left == null) {
                     currentNode.left = RedBlackNode(value)
                     currentNode = currentNode.left!!
                     inserted = true
+                    break
                 } else
                     currentNode = currentNode.left!!
             } else {
@@ -43,11 +46,13 @@ class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : Search
         }
         currentNode.left = nil
         currentNode.right = nil
+        Logger.debugInfo("Inserted ${currentNode.value}. Correction is ahead.")
         correctAfterInsertion(currentNode)
         root!!.isBlack = true
     }
 
     fun correctAfterInsertion(node: RedBlackNode<T>) {
+        Logger.debugInfo("correctAfterInsertion called for $node")
         //if parent isn't red no need to fix
         if (node.parent != null && node.parent!!.isBlack)
             return
@@ -102,23 +107,21 @@ class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : Search
             //continue for parent if it's red
             correctAfterInsertion(currentNode.parent!!)
         }
+        Logger.debugInfo("correctAfterInsertion finished")
     }
 
-    override fun remove(value: T): Boolean {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
     override fun find(value: T): RedBlackNode<T>? {
         if (root == null)
             return null
         var currentNode: RedBlackNode<T> = root!!
         while (true) {
-            if (value > currentNode.value!!) {
+            if (currentNode.value!! < value) {
                 if (currentNode.right == nil) { //mb check for null too
                     return null
                 }
                 currentNode = currentNode.right!!
-            } else if (value < currentNode.value!!) {
+            } else if (currentNode.value!! > value) {
                 if (currentNode.left == nil) {
                     return null
                 }

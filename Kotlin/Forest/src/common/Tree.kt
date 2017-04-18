@@ -2,13 +2,11 @@ package common
 
 import tools.Logger
 
-open class Tree<T>(private var root: Node<T>?) {
+abstract open class Tree<T: Comparable<T>>() {
 
     protected val logger: Logger = Logger()
 
-    open protected fun root(): Node<T>?  {
-        return root
-    }
+    abstract open fun root(): Node<T>?
 
     protected fun calculateRoot(): Node<T>? {
         return calculateRoot(root()!!)
@@ -23,7 +21,7 @@ open class Tree<T>(private var root: Node<T>?) {
     }
 
     fun print() {
-        Logger.debugInfo("Called print at tree with root $root")
+        Logger.debugInfo("Called print at tree with root ${root()}")
         if(root() == null) {
             println("Tree is empty.")
         } else {
@@ -34,12 +32,12 @@ open class Tree<T>(private var root: Node<T>?) {
 
     //TODO: implement using iterable
     private fun print(node: Node<T>) {
-        if(node.leftChild() != null) {
-            this.print(node.leftChild()!!)
+        if(node.children().first() != null) {
+            this.print(node.children().first()!!)
         }
         print(" ${if(node.value() != null) "$node " else ""}")
-        if(node.rightChild() != null) {
-            this.print(node.rightChild()!!)
+        if(node.children().last() != null) {
+            this.print(node.children().last()!!)
         }
     }
 
@@ -53,14 +51,14 @@ open class Tree<T>(private var root: Node<T>?) {
         }
         var specSymbol = ""
         if(curNode.parent() != null) {
-            if(curNode == curNode.parent()!!.leftChild())
+            if(curNode == curNode.parent()!!.children().first())
                 specSymbol = "\\"
             else
                 specSymbol = "/"
         }
-        draw(curNode.rightChild(), divider + "   ")
+        draw(curNode.children().last(), divider + "   ")
         println("$divider$specSymbol$curNode")
-        draw(curNode.leftChild(), divider + "   ")
+        draw(curNode.children().first(), divider + "   ")
     }
 
 }

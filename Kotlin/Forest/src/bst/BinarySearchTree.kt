@@ -3,26 +3,27 @@ package bst
 import common.*
 import tools.Logger
 
-class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null) : SearchTree<T>(root) {
+class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null) : SearchTree<T>() {
 
     override fun root(): Node<T>? {
         return root
     }
 
     override fun insert(value: T) {
+        Logger.debugInfo("BinarySearchTree: inserting $value")
         if(root == null) {
             root = BinarySearchNode(value)
             return
         }
         var currentBinarySearchNode: BinarySearchNode<T> = root!!
         while (true) {
-            if(value > currentBinarySearchNode.value) {
+            if(currentBinarySearchNode.value < value) {
                 if(currentBinarySearchNode.right == null) {
                     currentBinarySearchNode.right = BinarySearchNode(value)
                     return
                 }
                 currentBinarySearchNode = currentBinarySearchNode.right!!
-            } else if(value < currentBinarySearchNode.value) {
+            } else if(currentBinarySearchNode.value > value) {
                 if(currentBinarySearchNode.left == null) {
                     currentBinarySearchNode.left = BinarySearchNode(value)
                     return
@@ -76,12 +77,12 @@ class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null)
             return null
         var currentNode: BinarySearchNode<T> = root!!
         while (true) {
-            if(value > currentNode.value) {
+            if(currentNode.value < value) {
                 if(currentNode.right == null) {
                     return null
                 }
                 currentNode = currentNode.right!!
-            } else if(value < currentNode.value) {
+            } else if(currentNode.value > value) {
                 if(currentNode.left == null) {
                     return null
                 }
@@ -92,4 +93,76 @@ class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null)
         }
     }
 
+    override fun closestBigger(node: Node<T>): BinarySearchNode<T>? {
+        node as BinarySearchNode<T>
+        var currentNode: BinarySearchNode<T>? = node.right
+        if(currentNode != null) {
+            //go as left as possible from node's right child
+            while(currentNode!!.left != null && currentNode.left!!.value() != null) {
+                currentNode = currentNode.left
+            }
+            return currentNode
+        }
+        else if(node.parent() != null){
+            if(node.isLeftChild()) {
+                return node.parent
+            }
+            else {
+                //go on parent's line until node isn't left child or it's parent is null
+                var current: BinarySearchNode<T>? = node
+                while(current != null && current.isRightChild()) {
+                    current = current.parent
+                }
+                if(current == null || current.parent == null) {
+                    return null
+                } else {
+                    return current.parent!!
+                }
+            }
+        } else {
+            return null
+        }
+    }
+
+    override fun closestSmaller(node: Node<T>): BinarySearchNode<T>? {
+        node as BinarySearchNode<T>
+        var currentNode: BinarySearchNode<T>? = node.left ?: node.parent ?: return null
+        if(currentNode != null ) {
+            //go as left as possible from node's right child
+            while(currentNode!!.right != null && currentNode.right!!.value() != null) {
+                currentNode = currentNode.right
+            }
+            return currentNode
+        }
+        else if(node.parent != null){
+            if(node.isRightChild()) {
+                return node.parent
+            } else {
+                //go on parent's line until node isn't left child or it's parent is null
+                var current: BinarySearchNode<T>? = node
+                while(current != null && current.isLeftChild()) {
+                    current = current.parent
+                }
+                if(current == null || current.parent == null) {
+                    return null
+                } else {
+                    return current.parent!!
+                }
+            }
+        } else {
+            return null
+        }
+    }
+
+    override fun iterator(): Iterator<Node<T>?> {
+        return super.iterator()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return super<SearchTree>.equals(other)
+    }
+
+    override fun hashCode(): Int {
+        return super<SearchTree>.hashCode()
+    }
 }

@@ -1,15 +1,13 @@
 package common
 
-interface Node<T> {
-    fun value(): T?
+interface Node<T: Comparable<T>> {
+    fun value(): NodeValue<T>?
     fun parent() : Node<T>?
-    fun leftChild() : Node<T>?
-    fun rightChild() : Node<T>?
-
-    fun isLeftChild(): Boolean {
-        return parent() != null && parent()!!.leftChild() == this
-    }
-    fun isRightChild(): Boolean {
-        return parent() != null && parent()!!.rightChild() == this
-    }
+    fun children(): NodeChildren<Node<T>>
 }
+//abstract class Node<T>(var value: T?, open var parent:Node<T>?, open var children:NodeChildren<Node<T>>) {
+//    abstract var value: T?
+//    abstract var parent: Node<T>?
+//    abstract var children: NodeChildren<Node<T>>
+
+//}

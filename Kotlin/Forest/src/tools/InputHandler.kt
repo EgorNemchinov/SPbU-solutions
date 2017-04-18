@@ -51,6 +51,7 @@ class InputHandler {
     }
 
     fun parseValuesToTree(list: List<String>, tree: SearchTree<Int>?) {
+        println("parsing values for tree")
         list.forEach {
             if(it.isEmpty())
                 return@forEach

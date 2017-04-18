@@ -1,36 +1,50 @@
 package rbt
 
+import bst.BinaryChildren
 import common.*
 import tools.Logger
 
 //TODO: isBlack -> enum
-open class RedBlackNode<T>(var value: T?, var parent: RedBlackNode<T>? = null,
-                           left: RedBlackNode<T>? = null,
-                           right: RedBlackNode<T>? = null,
-                           isBlack: Boolean = false) : Node<T> {
-    var left: RedBlackNode<T>? = left
+class RedBlackNode<T: Comparable<T>>(var value: BinaryNodeValue<T>, var parent: RedBlackNode<T>? = null,
+                           var children: BinaryChildren<RedBlackNode<T>> = BinaryChildren(),
+                           var isBlack: Boolean = false) : Node<T> {
+    constructor(value: T, parent: RedBlackNode<T>? = null, children: BinaryChildren<RedBlackNode<T>> = BinaryChildren(), isBlack: Boolean = false)
+            : this(BinaryNodeValue(value), parent, children, isBlack)
+
+    var left: RedBlackNode<T>? = children.left
         set(value) {
+            Logger.debugInfo("Left child of ${this} is set to $value ")
             if(value == this) {
-                Logger.error("Attempt to set a node as a child of itself")
+                Logger.warning("Attempt to set a node $this as a child of itself")
                 return
             }
             field = value
+            children.left = value
             if(value != null)
                 value.parent = this
         }
-    var right: RedBlackNode<T>? = right
+        get() {
+            return children.left
+        }
+    var right: RedBlackNode<T>? = children.right
         set(value) {
+            Logger.debugInfo("Right child of ${this} is set to $value ")
             if(value == this) {
-                Logger.error("Attempt to set a node as a child of itself")
+                Logger.warning("Attempt to set a node $this as a child of itself")
                 return
             }
             field = value
+            children.right = value
             if(value != null)
                 value.parent = this
         }
-    var isBlack: Boolean = isBlack
+        get() {
+            return children.right
+        }
+
 
     fun setParentsReferenceTo(newChild: RedBlackNode<T>?) {
+        Logger.debugInfo("Setting ${this.value}'s parents reference to $newChild")
         if(newChild != null)
             newChild.parent = parent
         if(parent == null) {
@@ -43,20 +57,20 @@ open class RedBlackNode<T>(var value: T?, var parent: RedBlackNode<T>? = null,
         parent = null
     }
 
+    fun isNil(): Boolean {
+        return value == null && left == null && right == null
+    }
+
     override fun parent() : RedBlackNode<T>? {
         return parent
     }
 
-    override fun value(): T? {
+    override fun value(): BinaryNodeValue<T> {
         return value
     }
 
-    override fun leftChild(): Node<T>? {
-        return left
-    }
-
-    override fun rightChild(): Node<T>? {
-        return right
+    override fun children(): BinaryChildren<Node<T>> {
+        return children as BinaryChildren<Node<T>>
     }
 
     fun grandparent(): RedBlackNode<T>? {
@@ -96,9 +110,9 @@ open class RedBlackNode<T>(var value: T?, var parent: RedBlackNode<T>? = null,
 
     fun amountOfChildren(): Int {
         var count: Int = 0
-        if(left != null && left!!.value != null)
+        if(left != null)
             count++
-        if(right != null && right!!.value != null)
+        if(right != null)
             count++
         return count
     }
@@ -107,6 +121,7 @@ open class RedBlackNode<T>(var value: T?, var parent: RedBlackNode<T>? = null,
     fun rotateLeft() {
         if(this.right == null)
             return
+        Logger.debugInfo("rotateLeft() executed for $this")
         var rightChild: RedBlackNode<T> = this.right!!
         var floatingNode: RedBlackNode<T>? = rightChild.left //this will later become right child of this node
         this.setParentsReferenceTo(rightChild) //linking node's parent to node's right child
@@ -121,6 +136,7 @@ open class RedBlackNode<T>(var value: T?, var parent: RedBlackNode<T>? = null,
         this.setParentsReferenceTo(leftChild)
         leftChild.right = this
         this.left = floatingNode
+        Logger.debugInfo("rotateRight() executed for $this")
     }
 
     fun recolor() {
@@ -131,5 +147,42 @@ open class RedBlackNode<T>(var value: T?, var parent: RedBlackNode<T>? = null,
         if(value == null)
             return "NIL"
         return "$value${if(isBlack) "B" else "R"}"
+    }
+
+
+    fun isLeftChild(): Boolean {
+        if(parent == null)
+            return false
+        return parent!!.left == this
+    }
+
+    fun isRightChild(): Boolean {
+        if(parent == null)
+            return false
+        return parent!!.right == this
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other?.javaClass != javaClass) return false
+
+        other as RedBlackNode<*>
+
+        if (value != other.value) return false
+        if (isBlack != other.isBlack) return false
+        if(parent?.value == other.parent?.value)
+            return false
+        //todo: compare children
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = value.hashCode()
+        result = 31 * result + (parent?.hashCode() ?: 0)
+        result = 31 * result + (left?.hashCode() ?: 0)
+        result = 31 * result + (right?.hashCode() ?: 0)
+        result = 31 * result + isBlack.hashCode()
+        return result
     }
 }
