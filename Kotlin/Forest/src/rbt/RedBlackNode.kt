@@ -162,6 +162,10 @@ class RedBlackNode<T: Comparable<T>>(var value: BinaryNodeValue<T>, var parent: 
         return parent!!.right == this
     }
 
+    override fun isLeaf(): Boolean {
+        return (left == null || left!!.value() == null) && (right == null || right!!.value == null)
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other?.javaClass != javaClass) return false

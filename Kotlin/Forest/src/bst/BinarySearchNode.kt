@@ -91,6 +91,10 @@ open class BinarySearchNode<T: Comparable<T>>(var value: BinaryNodeValue<T>, var
         return parent!!.right == this
     }
 
+    override fun isLeaf(): Boolean {
+        return left == null && right == null
+    }
+
     override fun toString(): String {
         return "$value "
 //        return "$value. children are ${children.left?.value} and ${children.right?.value}"
