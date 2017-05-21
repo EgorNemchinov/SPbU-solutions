@@ -144,8 +144,6 @@ class RedBlackNode<T: Comparable<T>>(var value: BinaryNodeValue<T>, var parent: 
     }
 
     override fun toString(): String {
-        if(value == null)
-            return "NIL"
         return "$value${if(isBlack) "B" else "R"}"
     }
 
@@ -163,7 +161,7 @@ class RedBlackNode<T: Comparable<T>>(var value: BinaryNodeValue<T>, var parent: 
     }
 
     override fun isLeaf(): Boolean {
-        return (left == null || left!!.value() == null) && (right == null || right!!.value == null)
+        return (left == null) && (right == null)
     }
 
     override fun equals(other: Any?): Boolean {
