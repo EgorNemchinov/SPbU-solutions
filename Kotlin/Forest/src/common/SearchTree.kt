@@ -1,14 +1,17 @@
 package common
 
-abstract class SearchTree<T : Comparable<T>>/*(root: Node<T>?)*/ : Iterable<Node<T>?>, Tree<T>() {
+import java.util.*
 
-    override operator fun iterator(): Iterator<Node<T>?> = TreeIterator(this, min())
+abstract class SearchTree<T : Comparable<T>> : Iterable<Node<T>?>, Tree<T>() {
+
+    var currentIterator: Iterator<Node<T>?> = OrderIterator(this)
+    override operator fun iterator(): Iterator<Node<T>?> = currentIterator
     abstract fun insert(value: T)
     abstract fun remove(value: T): Boolean
     abstract fun find(value: T): Node<T>?
     fun min(): Node<T>? {
         var current: Node<T> = root() ?: return null
-        while(current.children().first() != null && current.children().first()!!.value() != null) {
+        while(current.children().first() != null && !current.children().first()!!.value()!!.equals(null)) {
             current = current.children().first()!!
         }
         return current
@@ -16,7 +19,7 @@ abstract class SearchTree<T : Comparable<T>>/*(root: Node<T>?)*/ : Iterable<Node
 
     fun max(): Node<T>? {
         var current: Node<T> = root() ?: return null
-        while(current.children().last() != null && current.children().last()!!.value() != null) {
+        while(current.children().last() != null && !current.children().last()!!.value()!!.equals(null)) {
             current = current.children().last()!!
         }
         return current
@@ -32,18 +35,67 @@ abstract class SearchTree<T : Comparable<T>>/*(root: Node<T>?)*/ : Iterable<Node
     abstract fun closestBigger(node: Node<T>): Node<T>?
     abstract fun closestSmaller(node: Node<T>): Node<T>?
 
-    class TreeIterator<T: Comparable<T>>(var tree: SearchTree<T>, var currentNode: Node<T>? = tree.root()): Iterator<Node<T>?> {
-        var next: Node<T>? = currentNode
+    class BfsIterator<T: Comparable<T>>(var tree: SearchTree<T>): Iterator<Node<T>?> {
+        var queue: Queue<Node<T>> = LinkedList<Node<T>>()
+
+        init {
+            if(tree.root() != null)
+                queue.add(tree.root())
+        }
 
         override fun hasNext(): Boolean {
-            return !(next == null || next!!.value() == null)
+            return queue.isNotEmpty()
+        }
+
+        override fun next(): Node<T> {
+            var curNode = queue.poll()
+            if(!curNode.isLeaf()) {
+                for(child in curNode.children()) {
+                    queue.add(child)
+                }
+            }
+            return curNode
+        }
+    }
+
+    class DfsIterator<T: Comparable<T>>(var tree: SearchTree<T>): Iterator<Node<T>?> {
+        var stack: Stack<Node<T>> = Stack()
+
+        init {
+            if(tree.root() != null)
+                stack.add(tree.root())
+        }
+
+        override fun hasNext(): Boolean {
+            return stack.isNotEmpty()
+        }
+
+        override fun next(): Node<T> {
+            var curNode = stack.pop()
+            if(!curNode.isLeaf()) {
+                for(child in curNode.children().toList().reversed()) {
+                    stack.add(child)
+                }
+            }
+            return curNode
+        }
+    }
+
+    class OrderIterator<T: Comparable<T>>(var tree: SearchTree<T>, var currentNode: Node<T>? = tree.min()): Iterator<Node<T>?> {
+        var nextNode: Node<T>? = currentNode
+
+        override fun hasNext(): Boolean {
+            if(nextNode == null)
+                return false
+            return !nextNode!!.equals(null)
         }
 
         override fun next(): Node<T>? {
-            currentNode = next
-            next = tree.closestBigger(currentNode!!)
+            currentNode = nextNode
+            nextNode = tree.closestBigger(currentNode!!)
             return currentNode
         }
+
     }
 
 }

@@ -30,7 +30,7 @@ class BinarySearchTree<T : Comparable<T>>(var root: BinarySearchNode<T>? = null)
                 }
                 currentBinarySearchNode = currentBinarySearchNode.left!!
             } else {
-                Logger.warning("Attempt to add node that is already contain in this tree.")
+                Logger.warning("Attempt to add value $value that is already contained in this tree.")
                 return
             }
         }

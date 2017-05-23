@@ -35,18 +35,17 @@ abstract open class Tree<T: Comparable<T>>() {
         if(node.children().first() != null) {
             this.print(node.children().first()!!)
         }
-        print(" ${if(node.value() != null) "$node " else ""}")
+        print(" ${if(!node.value()!!.equals(null)) "$node " else ""}")
         if(node.children().last() != null) {
             this.print(node.children().last()!!)
         }
     }
 
     //TODO: implement using array of strings, ?bfs?
-    /**intellectual property of Vladimir Maltsev */
     fun draw(curNode: Node<T>? = root(), divider: String = "") {
         if(curNode == root())
             Logger.debugInfo("Drawing tree with root ${root()}")
-        if(curNode == null || curNode.value() == null) {
+        if(curNode == null || curNode.value()!!.equals(null)) {
             return
         }
         var specSymbol = ""

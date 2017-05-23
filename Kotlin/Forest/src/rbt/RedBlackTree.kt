@@ -1,6 +1,5 @@
 package rbt
 
-import bst.BinarySearchNode
 import common.*
 import tools.Logger
 
@@ -40,7 +39,7 @@ class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : Search
                 } else
                     currentNode = currentNode.left!!
             } else {
-                Logger.warning("Attempt to add node that is already contained in this tree.")
+                Logger.warning("Attempt to add value $value that is already contained in this tree.")
                 return
             }
         }
@@ -357,9 +356,9 @@ class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : Search
     override fun closestBigger(node: Node<T>): RedBlackNode<T>? {
         node as RedBlackNode<T>
         var currentNode: RedBlackNode<T>? = node.right
-        if(currentNode != null && currentNode.value() != null) {
+        if(currentNode != null && !currentNode.value().equals(null)) {
             //go as left as possible from node's right child
-            while(currentNode!!.left != null && currentNode.left!!.value() != null) {
+            while(currentNode!!.left != null && !currentNode.left!!.value().equals(null)) {
                 currentNode = currentNode.left
             }
             return currentNode
@@ -388,9 +387,9 @@ class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : Search
     override fun closestSmaller(node: Node<T>): RedBlackNode<T>? {
         node as RedBlackNode<T>
         var currentNode: RedBlackNode<T>? = node.left ?: node.parent ?: return null
-        if (currentNode != null && currentNode.value != null) {
+        if (currentNode != null && !currentNode.value.equals(null)) {
             //go as left as possible from node's right child
-            while (currentNode!!.right != null && currentNode.right!!.value() != null) {
+            while (currentNode!!.right != null && !currentNode.right!!.value().equals(null)) {
                 currentNode = currentNode.right
             }
             return currentNode

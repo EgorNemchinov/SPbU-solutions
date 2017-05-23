@@ -58,7 +58,7 @@ class RedBlackNode<T: Comparable<T>>(var value: BinaryNodeValue<T>, var parent: 
     }
 
     fun isNil(): Boolean {
-        return value == null && left == null && right == null
+        return value.value == null && left == null && right == null
     }
 
     override fun parent() : RedBlackNode<T>? {
@@ -166,7 +166,10 @@ class RedBlackNode<T: Comparable<T>>(var value: BinaryNodeValue<T>, var parent: 
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other?.javaClass != javaClass) return false
+        if(other == null) {
+            return this.value.value == null
+        }
+        if (other.javaClass != javaClass) return false
 
         other as RedBlackNode<*>
 

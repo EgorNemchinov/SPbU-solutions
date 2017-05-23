@@ -1,24 +1,39 @@
 package tools
 
 import bst.BinarySearchTree
+import btree.BTree
 import common.*
 import rbt.RedBlackTree
 
 /**
  * Created by Egor Nemchinov on 03.03.17.
- * @Link github.com/ImmortalTurtle
  * SPbU, 2017
  */
 class InputHandler {
     var tree:  SearchTree<Int>? = null
 
-    //TODO: fully implement console-control
+    val INIT_STRING = """To find out possible commands, type "help" """
+    val HELP_STRING = """To create new tree, type:
+    "rbt" for RedBlackTree
+    "bst" for BinarySearchTree
+    "bt" for BTree
+
+To insert values, type +%VALUE%, for example: "+3 +7 +5"
+To remove values, type -%VALUE%, for example: "-3 -7 -5"
+To find values, type %VALUE%, for example: "3 7 5"
+"""
+    init {
+        println(INIT_STRING)
+    }
+
     fun start() {
         var str: String? = readLine()
         while(str != null) {
             str.toLowerCase()
             var list = str.split(" ")
-            if(str.contains("bst")) {
+            if(str.contains("help")) {
+                println(HELP_STRING)
+            } else if(str.contains("bst")) {
                 tree = BinarySearchTree<Int>()
                 if(list.size > 1)
                     parseValuesToTree(list.subList(1, list.lastIndex + 1), tree)
@@ -26,7 +41,14 @@ class InputHandler {
                 tree = RedBlackTree<Int>()
                 if(list.size > 1)
                     parseValuesToTree(list.subList(1, list.lastIndex + 1), tree)
-            } else if(str.contains("draw")) {
+            } else if(str.contains("bt")) {
+                val split = str.split(" ")
+                if(split.size > 1) {
+                    tree = BTree<Int>(t = Integer.parseInt(split[1]));
+                } else
+                    tree = BTree<Int>()
+            }
+            else if(str.contains("draw")) {
                 tree?.draw()
             } else if(str.contains("print")) {
                 tree?.print()
@@ -51,7 +73,7 @@ class InputHandler {
     }
 
     fun parseValuesToTree(list: List<String>, tree: SearchTree<Int>?) {
-        println("parsing values for tree")
+        Logger.debugInfo("parsing values for tree")
         list.forEach {
             if(it.isEmpty())
                 return@forEach
