@@ -173,9 +173,9 @@ class RedBlackNode<T: Comparable<T>>(var value: BinaryNodeValue<T>, var parent: 
 
         other as RedBlackNode<*>
 
-        if (value != other.value) return false
+        if (value.value != other.value.value) return false
         if (isBlack != other.isBlack) return false
-        if(parent?.value == other.parent?.value)
+        if(parent?.value != other.parent?.value)
             return false
         //todo: compare children
 

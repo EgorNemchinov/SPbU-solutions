@@ -413,4 +413,30 @@ class RedBlackTree<T: Comparable<T>>(var root: RedBlackNode<T>? = null) : Search
         }
     }
 
+    override fun equals(other: Any?): Boolean {
+        if(this === other)
+            return true
+        if(other == null)
+            return root == null
+        if(this.javaClass != other.javaClass)
+            return false
+
+        other as RedBlackTree<*>
+
+        val thisIterator = this.orderIterator()
+        val otherIterator = other.orderIterator()
+
+        while(thisIterator.hasNext() && otherIterator.hasNext()) {
+            val thisNode = thisIterator.next()
+            val otherNode = otherIterator.next()
+            if(thisNode != otherNode) {
+                println("$thisNode != $otherNode")
+                return false
+            }
+        }
+        if(thisIterator.hasNext() != otherIterator.hasNext())
+            return false
+
+        return true
+    }
 }
