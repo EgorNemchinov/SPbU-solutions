@@ -4,7 +4,6 @@ import common.NodeValue
 
 /**
  * Created by Egor Nemchinov on 08.04.17.
- * @Link github.com/ImmortalTurtle
  * SPbU, 2017
  */
 class BNodeValue<T: Comparable<T>>(var values: ComparableList<T> = ComparableList()) : NodeValue<ComparableList<T>>(), MutableList<T> {
@@ -17,7 +16,17 @@ class BNodeValue<T: Comparable<T>>(var values: ComparableList<T> = ComparableLis
     }
 
     override fun equals(other: Any?): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if(other === this)
+            return true
+        if(other == null)
+            return false
+        if(other.javaClass != this.javaClass)
+            return false
+
+        other as BNodeValue<*>
+        var equal = true
+        other.values.mapIndexed { index, comparable ->  equal = equal && comparable == this.values[index]}
+        return equal
     }
 
     operator fun plus(value: BNodeValue<T>): BNodeValue<T> {

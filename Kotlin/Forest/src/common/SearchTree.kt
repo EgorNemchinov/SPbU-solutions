@@ -4,7 +4,7 @@ import java.util.*
 
 abstract class SearchTree<T : Comparable<T>> : Iterable<Node<T>?>, Tree<T>() {
 
-    var currentIterator: Iterator<Node<T>?> = OrderIterator(this)
+    var currentIterator: Iterator<Node<T>?> = orderIterator()
     override operator fun iterator(): Iterator<Node<T>?> = currentIterator
     abstract fun insert(value: T)
     abstract fun remove(value: T): Boolean
@@ -34,6 +34,10 @@ abstract class SearchTree<T : Comparable<T>> : Iterable<Node<T>?>, Tree<T>() {
 
     abstract fun closestBigger(node: Node<T>): Node<T>?
     abstract fun closestSmaller(node: Node<T>): Node<T>?
+
+    fun dfsIterator(): Iterator<Node<T>?> = DfsIterator(this)
+    fun bfsIterator(): Iterator<Node<T>?> = BfsIterator(this)
+    fun orderIterator(): Iterator<Node<T>?> = OrderIterator(this)
 
     class BfsIterator<T: Comparable<T>>(var tree: SearchTree<T>): Iterator<Node<T>?> {
         var queue: Queue<Node<T>> = LinkedList<Node<T>>()

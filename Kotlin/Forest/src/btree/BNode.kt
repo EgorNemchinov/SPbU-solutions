@@ -7,7 +7,6 @@ import java.util.*
 
 /**
  * Created by Egor Nemchinov on 29.03.17.
- * @Link github.com/ImmortalTurtle
  * SPbU, 2017
  */
 
@@ -19,15 +18,15 @@ class BNode<T: Comparable<T>> constructor(var t: Int = 2, var values: BNodeValue
             : this(t, BNodeValue(ComparableList(valuesList)), parent, BChildren(children))
 
     override fun value(): NodeValue<T>? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO()
     }
 
     override fun parent(): BNode<T>? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return parent
     }
 
     override fun children(): BChildren<Node<T>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return children as BChildren<Node<T>>
     }
 
     fun insertValue(value: T) {
@@ -77,20 +76,12 @@ class BNode<T: Comparable<T>> constructor(var t: Int = 2, var values: BNodeValue
         return values.size>= 2*t-1
     }
 
-    fun addChild(newChild: BNode<T>) {
-
-    }
-
-    fun removeChild(deleted: T) {
-
-    }
-
-    fun removeChild(deletedNode: BNode<T>) {
-
-    }
-
     override fun isLeaf(): Boolean {
-        return children.isEmpty();
+        return children.isEmpty()
+    }
+
+    override fun toString(): String {
+        return "${values.values.joinToString(separator = "|", prefix = "[", postfix = "]")}"
     }
 
     override fun equals(other: Any?): Boolean {
