@@ -1,9 +1,7 @@
 package btree
 
 import common.Node
-import common.NodeChildren
 import common.NodeValue
-import java.util.*
 
 /**
  * Created by Egor Nemchinov on 29.03.17.
@@ -43,10 +41,6 @@ class BNode<T: Comparable<T>> constructor(var t: Int = 2, var values: BNodeValue
 
     fun containsValue(value: T): Boolean {
         return values.contains(value)
-    }
-
-    fun removeValue(deleted: T) {
-
     }
 
     //careful: parent mustn't be null

@@ -22,12 +22,12 @@ class BTree<T: Comparable<T>>(var root: BNode<T>? = null, var t: Int = 2): Searc
     }
 
     fun find(value: T, root: BNode<T>): Node<T>? {
-        if(root.containsValue(value))
-            return root
         if(root.isLeaf())
             return null
-        val childIndex = (0 until root.values.size-1).firstOrNull{ root.values[it] > value } ?: root.children.lastIndex
-            return find(value, root.children[childIndex])
+        val childIndex = indexInNode(value, root)
+        if(childIndex < root.values.size && root.values[childIndex] == value)
+            return root
+        return find(value, root.children[childIndex])
     }
 
     private fun splitNode(node: BNode<T>): Pair<BNode<T>, BNode<T>> {
@@ -54,16 +54,14 @@ class BTree<T: Comparable<T>>(var root: BNode<T>? = null, var t: Int = 2): Searc
     }
 
     val consequentSearch: (T, BNode<T>) -> Int = {
-        value, node -> ((0 until node.values.size - 1).firstOrNull{node.values[it] > value} ?: node.values.size)
+        value, node -> (0 until node.values.size - 1).firstOrNull{node.values[it] > value} ?: node.values.size
     }
 
     val binarySearch: (T, BNode<T>) -> Int = {
         value, node -> insertionIndex(node.values.binarySearch(value))
     }
 
-    val insertionIndex: (Int) -> (Int) = {
-        index -> if(index >= 0) index else (-index - 1)
-    }
+    fun insertionIndex(index: Int): Int = if(index >= 0) index else (-index - 1)
 
     val indexInNode: (T, BNode<T>) -> Int = binarySearch
 
@@ -211,7 +209,6 @@ class BTree<T: Comparable<T>>(var root: BNode<T>? = null, var t: Int = 2): Searc
     }
 
     override fun iterator(): Iterator<Node<T>?> {
-        println("Created iterator")
         return (object: Iterator<BNode<T>> {
             var queue: Queue<BNode<T>> = LinkedList<BNode<T>>()
 
