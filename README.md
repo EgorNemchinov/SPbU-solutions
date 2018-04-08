@@ -25,3 +25,13 @@ Console stack-calculator
 Console application able to open BMP file, parse it byte by byte and display the image in JPanel window.
  - MVC architecture: able to easily edit existing modules and add new ones.
  - JUnit tests: comparing pixel by pixel images parsed by this app and existing libraries.
+
+### 3rd semester. Parallel programming on C# language
+[Link](https://github.com/ImmortalTurtle/C-Sharp-Multithreading)
+#### There are:
+ - QuickSort
+ - Prime numbers search
+ - Recursive Folder MD5 Hash
+ - RedBlackTree with parallel searches in the tree
+ - Recursive web-pages parsing with Async
+ - Atomic Snapshots of shared memory
